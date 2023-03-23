@@ -6,4 +6,5 @@ export class CreateCommicDto {
     author: string;
     year: number;
     chapters: [String];
+    reads: number;
 }

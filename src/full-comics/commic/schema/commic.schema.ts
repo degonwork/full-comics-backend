@@ -15,6 +15,8 @@ export class Commic {
     year: number;
     @Prop()
     chapters: [String];
+    @Prop()
+    reads: number;
 }
 
 export const CommicSchema = SchemaFactory.createForClass(Commic);

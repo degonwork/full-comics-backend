@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-export type ChaptersDocument = Chapters & Document;
+export type ChapterDocument = Chapter & Document;
 
 @Schema()
-export class Chapters {
+export class Chapter {
     @Prop()
-    image_id: [String];
+    image_id: string;
     @Prop()
     commic_id: string;
     @Prop()
@@ -17,6 +17,8 @@ export class Chapters {
     chapter_intro: string;
     @Prop()
     publish_date: string;
+    @Prop()
+    reads: number;
 }
 
-export const ChaptersSchema = SchemaFactory.createForClass(Chapters);
+export const ChaptersSchema = SchemaFactory.createForClass(Chapter);

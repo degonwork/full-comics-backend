@@ -16,4 +16,8 @@ export class CommicService {
         newCommic.image_id = imageId;
         return await this.commicModel.create(newCommic);
     }
+
+    async findCommic() : Promise<Commic[]> {
+        return this.commicModel.find().exec();
+    }
 }

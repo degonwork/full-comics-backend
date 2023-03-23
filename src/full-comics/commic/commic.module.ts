@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Commic, CommicSchema } from './schema/commic.schema';
 import { CommicController } from './commic.controller';
 import { CommicService } from './commic.service';
-import { ImageModule } from '../image/image.module';
+import { ImageModule } from 'src/image/image.module';
 
 @Module({
     imports: [
@@ -11,6 +11,7 @@ import { ImageModule } from '../image/image.module';
         ImageModule,
     ],
     controllers: [CommicController],
-    providers: [CommicService]
+    providers: [CommicService],
+    exports: [CommicService],
 })
 export class CommicModule {}
