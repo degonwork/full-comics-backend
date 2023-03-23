@@ -4,7 +4,7 @@ import { HomeController } from './home.controller';
 import { ChapterModule } from 'src/full-comics/chapter/chapter.module';
 import { CommicModule } from 'src/full-comics/commic/commic.module';
 import { ImageModule } from 'src/image/image.module';
-import { HomeRepository } from './dto/repository/home.repository';
+import { HomeRepository } from './repository/home.repository';
 
 @Module({
   imports: [ChapterModule, CommicModule, ImageModule],

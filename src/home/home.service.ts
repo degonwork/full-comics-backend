@@ -4,7 +4,7 @@ import { CommicService } from 'src/full-comics/commic/commic.service';
 import { CreateHomeData } from './data/create-home.data';
 import { CreateHotCommicDto } from './dto/create_hot_commic.dto';
 import { CreateNewChapterDto } from './dto/create_new_chapter.dto';
-import { HomeRepository } from './dto/repository/home.repository';
+import { HomeRepository } from './repository/home.repository';
 
 @Injectable()
 export class HomeService {
