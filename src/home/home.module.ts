@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { HomeService } from './home.service';
 import { HomeController } from './home.controller';
-import { ChapterModule } from 'src/full-comics/chapter/chapter.module';
-import { CommicModule } from 'src/full-comics/commic/commic.module';
-import { ImageModule } from 'src/image/image.module';
+import { ChapterModule } from '../full-comics/chapter/chapter.module';
+import { CommicModule } from '../full-comics/commic/commic.module';
+import { ImageModule } from '../image/image.module';
 import { HomeRepository } from './repository/home.repository';
 
 @Module({

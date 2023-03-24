@@ -7,8 +7,7 @@ export class ChapterController {
     constructor(private readonly chapterService:ChapterService) {}
 
     @Post('create')
-    async createCommic(@Body() createChapterDto: CreateChapterDto) {
+    async createChapter(@Body() createChapterDto: CreateChapterDto) {
         return this.chapterService.createChapter(createChapterDto);
     }
-   
 }

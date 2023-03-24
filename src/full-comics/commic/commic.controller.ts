@@ -1,5 +1,4 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { CreateImageDto } from 'src/image/dto/create-image.dto';
 import { CommicService } from './commic.service';
 import { CreateCommicDto } from './dto/create-commic.dto';
 

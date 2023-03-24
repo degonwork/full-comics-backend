@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ChapterService } from 'src/full-comics/chapter/chapter.service';
-import { CommicService } from 'src/full-comics/commic/commic.service';
+import { ChapterService } from '../full-comics/chapter/chapter.service';
+import { CommicService } from '../full-comics/commic/commic.service';
 import { CreateHomeData } from './data/create-home.data';
 import { CreateHotCommicDto } from './dto/create_hot_commic.dto';
 import { CreateNewChapterDto } from './dto/create_new_chapter.dto';

@@ -1,24 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
-import { ImageService } from 'src/image/image.service';
+import {Model} from 'mongoose';
 import { CreateChapterDto } from './dto/create-chapter.dto';
+import { ChapterRepository } from './repository/chapter.repository';
 import { Chapter, ChapterDocument } from './schema/chapter.schema';
 
 @Injectable()
 export class ChapterService {
-    constructor(@InjectModel(Chapter.name) private readonly chapterModel: mongoose.Model<ChapterDocument>, private readonly imageService: ImageService) {}
+    constructor(
+        private chapterRepository: ChapterRepository
+        ) {}
      
     async createChapter(createChapterDto: CreateChapterDto): Promise<Chapter> {
-        const image = createChapterDto.image;
-        const imageId = (await this.imageService.createImage(image))._id;
-        const newChapter = Object.assign(createChapterDto);
-        newChapter.image_id = imageId;
-        return await this.chapterModel.create(newChapter);
+        return await this.chapterRepository.createObject(createChapterDto);
+       
     }
 
     async findChapter() : Promise<Chapter[]> {
-        return this.chapterModel.find().exec();
+        return this.chapterRepository.findObject();
     }
 }
     

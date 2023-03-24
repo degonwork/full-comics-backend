@@ -1,4 +1,4 @@
-import { CreateImageDto } from "src/image/dto/create-image.dto";
+import { CreateImageDto } from "../../../image/dto/create-image.dto";
 
 export class CreateCommicDto {
     image: CreateImageDto;
