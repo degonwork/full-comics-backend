@@ -13,6 +13,6 @@ import { CommicRepository } from './repository/commic.repository';
     ],
     controllers: [CommicController],
     providers: [CommicService, CommicRepository],
-    exports: [CommicService],
+    exports: [CommicService, CommicRepository],
 })
 export class CommicModule {}

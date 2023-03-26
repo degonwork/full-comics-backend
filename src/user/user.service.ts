@@ -1,13 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserRepository } from './repository/user.repository';
 import { User, UserDocument } from './schema/user.schema';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) { }
+    constructor(private readonly userRepository: UserRepository) { }
 
     // Lay du lieu nguoi dung
     async getDetailUser(user: UserDocument): Promise<any> {
@@ -20,16 +19,12 @@ export class UserService {
 
     // Tim kiem nguoi dung theo email
     async findbyEmail(email: string): Promise<UserDocument> {
-        return this.userModel.findOne({ email }).exec();
+        return this.userRepository.findOneObject({ email });
     }
 
     // Tao moi nguoi dung
-    async create(createUser: CreateUserDto): Promise<UserDocument> {
-        const newUser = new this.userModel();
-        newUser.userName = createUser.userName;
-        newUser.email = createUser.email;
-        newUser.password = createUser.password;
-        return newUser.save();
+    async create(createUserDto: CreateUserDto): Promise<UserDocument> {
+        return this.userRepository.createObject(createUserDto);
     }
 
     // Cap nhanh refreshToken user 

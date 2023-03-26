@@ -3,10 +3,11 @@ import { Document } from "mongoose";
 
 export type ImageDocument = Image & Document;
 
-export enum TypeBook  {
+export enum TypeImage  {
     COMMIC = 'commic',
     CHAPTER = 'chapter',
-    CONTENT = 'content'
+    CONTENT = 'content',
+    PUBLISHER = 'publisher,'
 }
 
 @Schema()
@@ -14,7 +15,7 @@ export class Image {
     @Prop()
     path: string;
     @Prop()
-    type: TypeBook;
+    type: TypeImage;
 }
 
 export const ImageSchema = SchemaFactory.createForClass(Image);

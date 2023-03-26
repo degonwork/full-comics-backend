@@ -1,27 +1,18 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
+import { Injectable  } from '@nestjs/common';
 import { CreateImageDto } from './dto/create-image.dto';
-import { ImageDocument, Image, TypeBook } from './schema/image.schema';
+import { ImageRepository } from './repository/image.repository';
+import { ImageDocument, Image, } from './schema/image.schema';
 
 @Injectable()
 export class ImageService {
-    constructor(@InjectModel(Image.name) private readonly imageModel: mongoose.Model<ImageDocument>) { }
+    constructor(private readonly imageRepository: ImageRepository) { }
 
     async createImage(createImageDto: CreateImageDto): Promise<ImageDocument> {
-        const newBook = new this.imageModel();
-        const { path, type } = createImageDto;
-        newBook.path = path;
-        newBook.type = type;
-        return newBook.save();
+        return this.imageRepository.createObject(createImageDto);
     }
 
 
-    async findImageById(id: string): Promise<Image> {
-        const isValidId = mongoose.isValidObjectId(id);
-        if (!isValidId) throw new BadRequestException('Please enter correct id');
-        const image = this.imageModel.findById(id);
-        if (!image) throw new NotFoundException('Image not found');
-        return image;
+    async findImageById(_id: string): Promise<Image> {
+       return this.imageRepository.findOneObject({_id});
     }
 }

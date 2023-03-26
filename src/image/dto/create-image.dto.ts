@@ -1,6 +1,6 @@
-import { TypeBook } from "../schema/image.schema";
+import { TypeImage } from "../schema/image.schema";
 
 export class CreateImageDto {
     path: string;
-    type: TypeBook;
+    type: TypeImage;
 }
