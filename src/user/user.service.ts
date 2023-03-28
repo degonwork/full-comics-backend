@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUUIDUserDto } from './dto/create-uuid-user.dto';
 import { UserRepository } from './repository/user.repository';
 import { User, UserDocument } from './schema/user.schema';
 
@@ -22,9 +23,21 @@ export class UserService {
         return this.userRepository.findOneObject({ email });
     }
 
+    async findbyUUID(uuid: string): Promise<UserDocument> {
+        return this.userRepository.findOneObject({ uuid });
+    }
+
+    async findbyId(_id: string): Promise<UserDocument> {
+        return this.userRepository.findOneObject({ _id });
+    }
+
     // Tao moi nguoi dung
-    async create(createUserDto: CreateUserDto): Promise<UserDocument> {
-        return this.userRepository.createObject(createUserDto);
+    async createUser(uuid: string, createUserDto: CreateUserDto): Promise<UserDocument> {
+        return this.userRepository.findOneObjectAndUpdate({ uuid }, createUserDto);
+    }
+
+    async createUUIDUser(createUUIDUserDto: CreateUUIDUserDto): Promise<UserDocument> {
+        return this.userRepository.createObject(createUUIDUserDto);
     }
 
     // Cap nhanh refreshToken user 

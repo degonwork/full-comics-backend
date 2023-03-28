@@ -1,3 +1,3 @@
 export class UpdateCommicDto {
-    constructor(public chapters = [String]){}
+    constructor(public chapters: string[], public readonly reads: number){}
 }

@@ -27,7 +27,7 @@ export abstract class EntityRepository<T extends Document> {
                 newObject.publish_date = new Date().toLocaleDateString('en-GB');
             }
         }
-        return await this.entityModel.create(newObject);;
+        return await this.entityModel.create(newObject);
     }
 
     async findOneObject(entityFilterQuery: FilterQuery<T>): Promise<T> | null {
@@ -41,4 +41,5 @@ export abstract class EntityRepository<T extends Document> {
     async findObject(): Promise<T[]> | null {
         return this.entityModel.find().exec();
     }
+
 }

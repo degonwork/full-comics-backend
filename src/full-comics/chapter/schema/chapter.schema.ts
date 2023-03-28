@@ -12,7 +12,7 @@ export class Chapter {
     @Prop()
     publisher_id: string;
     @Prop()
-    chapter_content: [String];
+    chapter_content: string[];
     @Prop()
     chapter_intro: string;
     @Prop()
@@ -21,4 +21,4 @@ export class Chapter {
     reads: number;
 }
 
-export const ChaptersSchema = SchemaFactory.createForClass(Chapter);
+export const ChapterSchema = SchemaFactory.createForClass(Chapter);

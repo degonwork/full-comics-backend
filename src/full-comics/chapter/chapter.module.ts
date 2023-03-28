@@ -1,19 +1,20 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Chapter, ChaptersSchema } from './schema/chapter.schema';
+import { Chapter, ChapterSchema,  } from './schema/chapter.schema';
 import { ChapterController } from './chapter.controller';
 import { ChapterService } from './chapter.service';
 import { ImageModule } from '../../image/image.module';
 import { ChapterRepository } from './repository/chapter.repository';
 import { CommicModule } from '../commic/commic.module';
 import { CommicService } from '../commic/commic.service';
-import { CommicRepository } from '../commic/repository/commic.repository';
+import { ChapterReadModule } from '../../chapter-read/chapter-read.module';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{name:Chapter.name, schema: ChaptersSchema}]),
+        MongooseModule.forFeature([{name:Chapter.name, schema: ChapterSchema}]),
         ImageModule,
         CommicModule,
+        ChapterReadModule,
     ],
     controllers: [ChapterController],
     providers: [ChapterService, ChapterRepository, CommicService],

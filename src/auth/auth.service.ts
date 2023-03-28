@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { UserRepository } from 'src/user/repository/user.repository';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { ExistingUser } from '../user/dto/existing-user.dto';
 import { UserDocument } from '../user/schema/user.schema';
@@ -40,13 +41,19 @@ export class AuthService {
     }
 
     // Dang ky 
-    async register(newUser: CreateUserDto) {
-        const { userName, email, password } = newUser;
-        const existingUser = await this.userService.findbyEmail(email);
-        if (existingUser) return "Email Taken!";
-        newUser.password = await this.hashPassword(password);
-        const createNewUser = await this.userService.create(newUser);
-        return this.userService.getDetailUser(createNewUser);
+    async register(uuid: string, newUser: CreateUserDto) {
+        const { email, password } = newUser;
+        const userUUID = await this.userService.findbyUUID(uuid);
+        if (userUUID) {
+            const existingUser = await this.userService.findbyEmail(email);
+            if (existingUser) return "Email Taken!";
+            newUser.password = await this.hashPassword(password);
+            const createNewUser = await this.userService.createUser(uuid, newUser);
+            return this.userService.getDetailUser(createNewUser);
+        } else {
+            return 'user is not Exist';
+        }
+
     }
 
     // Dang nhap
@@ -77,6 +84,6 @@ export class AuthService {
         await this.userService.updateRefreshToken(user.email, { refreshToken: null })
         return {
             statuscode: 200
-        }
+        };
     }
 }

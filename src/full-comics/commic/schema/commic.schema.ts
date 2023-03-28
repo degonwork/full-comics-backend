@@ -14,7 +14,7 @@ export class Commic {
     @Prop()
     year: number;
     @Prop()
-    chapters: [String];
+    chapters: string[];
     @Prop()
     reads: number;
 }

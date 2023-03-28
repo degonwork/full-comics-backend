@@ -16,7 +16,7 @@ export class CommicService {
         return await this.commicRepository.createObject(createCommicDto);
     }
 
-    async findCommicById(_id: string) : Promise<Commic> {
+    async findCommicById(_id: string) : Promise<CommicDocument> {
         return this.commicRepository.findOneObject({_id});
     }
 

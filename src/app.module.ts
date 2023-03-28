@@ -7,7 +7,7 @@ import { ChapterModule } from './full-comics/chapter/chapter.module';
 import { PublisherModule } from './publisher/publisher.module';
 import { ImageModule } from './image/image.module';
 import { CommicModule } from './full-comics/commic/commic.module';
-import { HomeModule } from './home/home.module';
+import { ChapterReadModule } from './chapter-read/chapter-read.module';
 
 
 @Module({
@@ -18,13 +18,13 @@ import { HomeModule } from './home/home.module';
       useFactory: (configService: ConfigService) => ({ uri: configService.get("MONGO_URI") }),
       inject: [ConfigService],
     }),
+    ChapterReadModule,
     AuthModule,
     UserModule,
     CommicModule,
     ChapterModule,
     PublisherModule,
     ImageModule,
-    HomeModule,
   ],
   controllers: [],
   providers: [],
