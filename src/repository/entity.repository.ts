@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Model, Document, FilterQuery, UpdateQuery } from "mongoose";
+import { Model, Document, FilterQuery, UpdateQuery, Query } from "mongoose";
 import { CreateChapterContentDto } from "../full-comics/chapter/dto/create-chapter-content.dto";
 import { ImageService } from "../image/image.service";
 
@@ -24,7 +24,7 @@ export abstract class EntityRepository<T extends Document> {
                     createChapterContent.chapterContentId.push(imageIdChapterContent);
                 }
                 newObject.chapter_content = createChapterContent.chapterContentId;
-                newObject.publish_date = new Date().toLocaleDateString('en-GB');
+                newObject.publish_date = new Date().toLocaleString('en-GB', { hour12: false });
             }
         }
         return await this.entityModel.create(newObject);
@@ -38,8 +38,8 @@ export abstract class EntityRepository<T extends Document> {
         return this.entityModel.findOneAndUpdate(entityFilterQuery, updateEntityData).exec();
     }
 
-    async findObject(): Promise<T[]> | null {
-        return this.entityModel.find().exec();
+    async findObject(limit?: number): Promise<T[]> | null {
+        return this.entityModel.find().limit(limit).exec();
     }
 
 }

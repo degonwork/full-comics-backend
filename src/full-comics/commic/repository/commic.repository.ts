@@ -5,7 +5,7 @@ import { EntityRepository } from "../../../repository/entity.repository";
 import { Commic, CommicDocument } from "../schema/commic.schema";
 
 export class CommicRepository extends EntityRepository<CommicDocument>{
-    constructor(@InjectModel(Commic.name) chapterModel: Model<CommicDocument>,  imageService: ImageService) {
-        super(chapterModel, imageService);
+    constructor(@InjectModel(Commic.name) private readonly commicModel: Model<CommicDocument>,  imageService: ImageService) {
+        super(commicModel, imageService);
     }
 }

@@ -16,6 +16,8 @@ export class Commic {
     @Prop()
     chapters: string[];
     @Prop()
+    new_update_time: string;
+    @Prop()
     reads: number;
 }
 

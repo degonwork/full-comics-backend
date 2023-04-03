@@ -7,7 +7,7 @@ import { Chapter, ChapterDocument } from "../schema/chapter.schema";
 
 @Injectable()
 export class ChapterRepository extends EntityRepository<ChapterDocument>{
-    constructor(@InjectModel(Chapter.name) chapterModel: Model<ChapterDocument>, imageService: ImageService) {
+    constructor(@InjectModel(Chapter.name) private readonly chapterModel: Model<ChapterDocument>, imageService: ImageService) {
         super(chapterModel, imageService);
     }
 }

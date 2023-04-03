@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ChapterReadService } from 'src/chapter-read/chapter-read.service';
 import { CommicService } from '../commic/commic.service';
 import { UpdateCommicDto } from '../commic/dto/update-commic.dto';
@@ -10,18 +10,19 @@ import { Chapter, ChapterDocument } from './schema/chapter.schema';
 @Injectable()
 export class ChapterService {
     constructor(
+        @Inject(forwardRef(() => CommicService)) private commicService: CommicService,
         private readonly chapterRepository: ChapterRepository,
-        private readonly commicService: CommicService,
         private readonly chapterReadService: ChapterReadService,
 
     ) { }
 
     async createChapter(createChapterDto: CreateChapterDto): Promise<ChapterDocument> {
-        let updateCommicDto = new UpdateCommicDto([], 0);
+        let updateCommicDto = new UpdateCommicDto([], 0, '');
         createChapterDto.reads = updateCommicDto.reads;
         const chapter = await this.chapterRepository.createObject(createChapterDto);
         updateCommicDto.chapters = (await this.commicService.findCommicById(createChapterDto.commic_id)).chapters;
         updateCommicDto.chapters.push(chapter._id);
+        updateCommicDto.new_update_time = chapter.publish_date;
         await this.commicService.findCommicByIdAndUpdate(createChapterDto.commic_id, updateCommicDto);
         return chapter;
     }
@@ -40,6 +41,10 @@ export class ChapterService {
             console.log('Dont create');
         }
         return chapter;
+    }
+
+    async findChapterByIdWithoutUUID(_id: string): Promise<ChapterDocument> {
+        return this.chapterRepository.findOneObject({ _id });
     }
 
     async findChapter(): Promise<Chapter[]> {

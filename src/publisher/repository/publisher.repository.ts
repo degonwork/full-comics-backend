@@ -7,7 +7,7 @@ import { Publisher, PublisherDocument } from "../schema/publisher.schema";
 
 @Injectable()
 export class PublisherRepository extends EntityRepository<PublisherDocument>{
-    constructor(@InjectModel(Publisher.name) PublisherModel: Model<PublisherDocument>, imageService: ImageService) {
-        super(PublisherModel, imageService);
+    constructor(@InjectModel(Publisher.name) private readonly publisherModel: Model<PublisherDocument>, imageService: ImageService) {
+        super(publisherModel, imageService);
     }
 }

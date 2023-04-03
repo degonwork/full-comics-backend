@@ -6,7 +6,7 @@ import { ImageDocument, Image } from "../schema/image.schema";
 
 @Injectable()
 export class ImageRepository extends EntityRepository<ImageDocument>{
-    constructor(@InjectModel(Image.name) imageModel: Model<ImageDocument>) {
+    constructor(@InjectModel(Image.name) private readonly imageModel: Model<ImageDocument>) {
         super(imageModel, null);
     }
 }

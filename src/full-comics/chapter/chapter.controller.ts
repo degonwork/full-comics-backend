@@ -10,12 +10,14 @@ export class ChapterController {
         ) {}
 
     @Post('create')
-    async createChapter(@Body() createChapterDto: CreateChapterDto): Promise<ChapterDocument> {
+    async createChapter(@Body() createChapterDto: CreateChapterDto): Promise<ChapterDocument| string> {
         return this.chapterService.createChapter(createChapterDto);
     }
 
-    @Get(':id')
+    @Get('/detail-chapter/:id')
     async getChapterById(@Param('id') id: string, @Headers('uuid') uuid: string) : Promise<Chapter> {
         return this.chapterService.findChapterById(id, uuid);
     }
+
+   
 }

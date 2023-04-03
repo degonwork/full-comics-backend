@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Chapter, ChapterSchema,  } from './schema/chapter.schema';
 import { ChapterController } from './chapter.controller';
@@ -13,7 +13,7 @@ import { ChapterReadModule } from '../../chapter-read/chapter-read.module';
     imports: [
         MongooseModule.forFeature([{name:Chapter.name, schema: ChapterSchema}]),
         ImageModule,
-        CommicModule,
+        forwardRef(() => CommicModule),
         ChapterReadModule,
     ],
     controllers: [ChapterController],
