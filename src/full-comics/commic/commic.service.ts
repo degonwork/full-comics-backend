@@ -17,6 +17,7 @@ export class CommicService {
     ) { }
 
     async getCommicOption(commic: CommicDocument, isDetail: boolean): Promise<any> {
+        console.log(commic.image_id);
         const image = (await this.imageService.findImageById(commic.image_id)).path;
         if (!isDetail) { return new ResponseCommic(commic, image); }
         return {

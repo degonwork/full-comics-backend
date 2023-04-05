@@ -11,8 +11,7 @@ export class ImageService {
         return this.imageRepository.createObject(createImageDto);
     }
 
-
     async findImageById(_id: string): Promise<Image> {
-       return this.imageRepository.findOneObject({_id});
+        return this.imageRepository.findOneObject({_id});
     }
 }

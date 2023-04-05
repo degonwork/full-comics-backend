@@ -17,8 +17,8 @@ export class ChapterService {
     ) { }
 
     async createChapter(createChapterDto: CreateChapterDto): Promise<ChapterDocument> {
-        let updateCommicDto = new UpdateCommicDto([], 0, '');
-        createChapterDto.reads = updateCommicDto.reads;
+        let updateCommicDto = new UpdateCommicDto([], '');
+        // createChapterDto.reads = updateCommicDto.reads;
         const chapter = await this.chapterRepository.createObject(createChapterDto);
         updateCommicDto.chapters = (await this.commicService.findCommicById(createChapterDto.commic_id)).chapters;
         updateCommicDto.chapters.push(chapter._id);

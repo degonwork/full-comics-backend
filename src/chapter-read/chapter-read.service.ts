@@ -24,7 +24,7 @@ export class ChapterReadService {
             const user = await this.userService.createUUIDUser(new CreateUUIDUserDto(uuid));
             const commic = await this.commicService.findCommicById(commic_id);
             commic.reads += 1;
-            await this.commicService.findCommicByIdAndUpdate(commic._id, new UpdateCommicDto(commic.chapters, commic.reads));
+            await this.commicService.findCommicByIdAndUpdate(commic._id, new UpdateCommicDto(commic.chapters, commic.new_update_time, commic.reads));
             createChapterReadDto.user_id = user._id;
             createChapterReadDto.state = 'reading'
             return this.chapterReadRepository.createObject(createChapterReadDto);
@@ -36,7 +36,7 @@ export class ChapterReadService {
                 console.log('commic is not existing');
                 const commic = await this.commicService.findCommicById(commic_id);
                 commic.reads += 1;
-                await this.commicService.findCommicByIdAndUpdate(commic._id, new UpdateCommicDto(commic.chapters, commic.reads));
+                await this.commicService.findCommicByIdAndUpdate(commic._id, new UpdateCommicDto(commic.chapters, commic.new_update_time, commic.reads));
                 createChapterReadDto.state = 'reading';
                 return this.chapterReadRepository.createObject(createChapterReadDto);
             }
@@ -45,7 +45,7 @@ export class ChapterReadService {
                 console.log('chapter is not existing');
                 createChapterReadDto.state = 'reading'
                 return this.chapterReadRepository.createObject(createChapterReadDto);
-            } 
+            }
         }
         return null;
     }
