@@ -17,7 +17,6 @@ export class CommicService {
     ) { }
 
     async getCommicOption(commic: CommicDocument, isDetail: boolean): Promise<any> {
-        console.log(commic.image_id);
         const image = (await this.imageService.findImageById(commic.image_id)).path;
         if (!isDetail) { return new ResponseCommic(commic, image); }
         return {
@@ -32,8 +31,9 @@ export class CommicService {
         return await this.commicRepository.createObject(createCommicDto);
     }
 
-    async findCommicById(_id: string): Promise<CommicDocument> {
-        return this.commicRepository.findOneObject({ _id });
+    async findCommicById(_id: string): Promise<any> {
+        const commic = await this.commicRepository.findOneObject({ _id });
+        return this.getCommicOption(commic, false);
     }
 
     async findCommicByIdAndUpdate(_id: string, updateCommicDto: UpdateCommicDto): Promise<Commic> {

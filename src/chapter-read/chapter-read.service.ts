@@ -22,7 +22,7 @@ export class ChapterReadService {
         if (!userExisted) {
             console.log('user is not existing');
             const user = await this.userService.createUUIDUser(new CreateUUIDUserDto(uuid));
-            const commic = await this.commicService.findCommicById(commic_id);
+            const commic = (await this.commicService.findCommicById(commic_id)).commic;
             commic.reads += 1;
             await this.commicService.findCommicByIdAndUpdate(commic._id, new UpdateCommicDto(commic.chapters, commic.new_update_time, commic.reads));
             createChapterReadDto.user_id = user._id;
@@ -34,7 +34,7 @@ export class ChapterReadService {
             const commicExisted = await this.getChapterReadByCommicIDWithUserID(userExisted._id, commic_id);
             if (!commicExisted) {
                 console.log('commic is not existing');
-                const commic = await this.commicService.findCommicById(commic_id);
+                const commic = (await this.commicService.findCommicById(commic_id)).commic;
                 commic.reads += 1;
                 await this.commicService.findCommicByIdAndUpdate(commic._id, new UpdateCommicDto(commic.chapters, commic.new_update_time, commic.reads));
                 createChapterReadDto.state = 'reading';

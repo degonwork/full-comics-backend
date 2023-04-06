@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
+import { UpdateChaptersCommic } from "src/full-comics/chapter/dto/update-chapters-commic.dto";
 
 export type CommicDocument = Commic & Document;
 
@@ -14,7 +15,7 @@ export class Commic {
     @Prop()
     year: number;
     @Prop()
-    chapters: string[];
+    chapters: UpdateChaptersCommic[];
     @Prop()
     new_update_time: string;
     @Prop()
