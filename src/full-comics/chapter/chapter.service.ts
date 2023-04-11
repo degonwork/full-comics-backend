@@ -23,15 +23,14 @@ export class ChapterService {
 
     async createChapter(createChapterDto: CreateChapterDto): Promise<ChapterDocument> {
         let updateCommicDto = new UpdateCommicDto([], '');
-        let createChapterContent = new CreateChapterContentDto();
+        let createChapterContent = new CreateChapterContentDto([]);
         // createChapterDto.reads = updateCommicDto.reads;
         const newChapter = Object.assign(createChapterDto);
         const imageObject = createChapterDto.image;
-        const imageId = (await this.imageService.createImage(imageObject))._id;
+        const imageId = await this.chapterRepository.createImage(imageObject);
         newChapter.image_id = imageId;
-        createChapterContent.chapterContentId = [];
         for (const imageChapterContent of createChapterDto.chapter_content) {
-            const imageIdChapterContent = (await this.imageService.createImage(imageChapterContent))._id;
+            const imageIdChapterContent = await this.chapterRepository.createImage(imageChapterContent);
             createChapterContent.chapterContentId.push(imageIdChapterContent);
         }
         newChapter.chapter_content = createChapterContent.chapterContentId;

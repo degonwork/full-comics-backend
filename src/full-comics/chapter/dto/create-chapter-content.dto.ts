@@ -1,3 +1,3 @@
 export class CreateChapterContentDto {
-    constructor(public chapterContentId = [String]) { }
+    constructor(public chapterContentId : string[]) { }
 }
