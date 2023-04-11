@@ -7,11 +7,19 @@ export type CommicDocument = Commic & Document;
 @Schema()
 export class Commic {
     @Prop()
-    image_id: string;
+    image_detail_id: string;
+    @Prop()
+    image_thumnail_square_id: string;
+    @Prop()
+    image_thumnail_rectangle_id: string;
     @Prop()
     title: string;
     @Prop()
+    categories_id: string[];
+    @Prop()
     author: string;
+    @Prop()
+    description: string;
     @Prop()
     year: number;
     @Prop()

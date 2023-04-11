@@ -8,6 +8,7 @@ import { PublisherModule } from './publisher/publisher.module';
 import { ImageModule } from './image/image.module';
 import { CommicModule } from './full-comics/commic/commic.module';
 import { ChapterReadModule } from './chapter-read/chapter-read.module';
+import { CategoryModule } from './category/category.module';
 
 
 @Module({
@@ -25,6 +26,7 @@ import { ChapterReadModule } from './chapter-read/chapter-read.module';
     ChapterModule,
     PublisherModule,
     ImageModule,
+    CategoryModule,
   ],
   controllers: [],
   providers: [],

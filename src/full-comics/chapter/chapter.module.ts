@@ -8,6 +8,7 @@ import { ChapterRepository } from './repository/chapter.repository';
 import { CommicModule } from '../commic/commic.module';
 import { CommicService } from '../commic/commic.service';
 import { ChapterReadModule } from '../../chapter-read/chapter-read.module';
+import { CategoryModule } from '../../category/category.module';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { ChapterReadModule } from '../../chapter-read/chapter-read.module';
         ImageModule,
         forwardRef(() => CommicModule),
         ChapterReadModule,
+        CategoryModule,
     ],
     controllers: [ChapterController],
     providers: [ChapterService, ChapterRepository, CommicService],

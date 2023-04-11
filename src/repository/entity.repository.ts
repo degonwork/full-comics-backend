@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { Model, Document, FilterQuery, UpdateQuery, Query } from "mongoose";
-import { CreateChapterContentDto } from "../full-comics/chapter/dto/create-chapter-content.dto";
+import { Model, Document, FilterQuery, UpdateQuery } from "mongoose";
+import { CreateImageDto } from "../image/dto/create-image.dto";
 import { ImageService } from "../image/image.service";
 
 @Injectable()
@@ -10,23 +10,12 @@ export abstract class EntityRepository<T extends Document> {
         private readonly imageService: ImageService | null,
     ) { }
 
-    async createObject(createObjectDto: any): Promise<T> | null {
-        const newObject = Object.assign(createObjectDto);
-        const imageObject = createObjectDto.image;
-        if (imageObject) {
-            const imageId = (await this.imageService.createImage(imageObject))._id;
-            newObject.image_id = imageId;
-            if (createObjectDto.chapter_content) {
-                let createChapterContent = new CreateChapterContentDto();
-                createChapterContent.chapterContentId = [];
-                for (const imageChapterContent of createObjectDto.chapter_content) {
-                    const imageIdChapterContent = (await this.imageService.createImage(imageChapterContent))._id;
-                    createChapterContent.chapterContentId.push(imageIdChapterContent);
-                }
-                newObject.chapter_content = createChapterContent.chapterContentId;
-                newObject.publish_date = new Date().toLocaleString('en-GB', { hour12: false });
-            }
-        }
+    async createImage(imageObject: CreateImageDto): Promise<string | null> {
+        const imageObjectId = (await this.imageService.createImage(imageObject))._id;
+        return imageObjectId;
+    }
+
+    async createObject(newObject: any): Promise<T> | null {
         return await this.entityModel.create(newObject);
     }
 

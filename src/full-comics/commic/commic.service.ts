@@ -3,9 +3,11 @@ import { Commic, CommicDocument } from './schema/commic.schema';
 import { CreateCommicDto } from './dto/create-commic.dto';
 import { CommicRepository } from './repository/commic.repository';
 import { UpdateCommicDto } from './dto/update-commic.dto';
-import { ImageService } from 'src/image/image.service';
+import { ImageService } from '../../image/image.service';
 import { ResponseCommic } from './dto/response-commic.dto';
 import { ChapterService } from '../chapter/chapter.service';
+import { CategoryService } from '../../category/category.service';
+import { CreateCategoryDto } from '../../category/dto/create-category.dto';
 
 @Injectable()
 export class CommicService {
@@ -13,22 +15,38 @@ export class CommicService {
         @Inject(forwardRef(() => ChapterService)) private readonly chapterService: ChapterService,
         private readonly commicRepository: CommicRepository,
         private readonly imageService: ImageService,
-
+        private readonly categoryService: CategoryService,
     ) { }
 
     async getCommicOption(commic: CommicDocument, isDetail: boolean): Promise<any> {
-        const image = (await this.imageService.findImageById(commic.image_id)).path;
+        const image = {
+            image_detail: (await this.imageService.findImageById(commic.image_detail_id)).path,
+            image_thumnail_square: (await this.imageService.findImageById(commic.image_thumnail_square_id)).path,
+            image_thumnail_rectangle: (await this.imageService.findImageById(commic.image_thumnail_rectangle_id)).path
+        };
         if (!isDetail) { return new ResponseCommic(commic, image); }
         return {
             id: commic._id,
             title: commic.title,
-            image: (await this.imageService.findImageById(commic.image_id)).path,
+            image: image,
         }
     }
 
     async createCommic(createCommicDto: CreateCommicDto): Promise<CommicDocument> {
         // createCommicDto.reads = 0;
-        return await this.commicRepository.createObject(createCommicDto);
+        const newCommic = Object.assign(createCommicDto);
+        const imageDetailId = await this.commicRepository.createImage(createCommicDto.image_detail);
+        newCommic.image_detail_id = imageDetailId;
+        const imageThumnailSquareObjectId = await this.commicRepository.createImage(createCommicDto.image_thumnail_square);
+        newCommic.image_thumnail_square_id = imageThumnailSquareObjectId;
+        const imageThumnailRectangleObjectId = await this.commicRepository.createImage(createCommicDto.image_thumnail_rectangle);
+        newCommic.image_thumnail_rectangle_id = imageThumnailRectangleObjectId;
+        newCommic.categories_id = [];
+        for (const category of createCommicDto.categories) {
+            const categoryId = (await this.categoryService.createCategory(new CreateCategoryDto(category)))._id;
+            newCommic.categories_id.push(categoryId);
+        }
+        return await this.commicRepository.createObject(newCommic);
     }
 
     async findCommicById(_id: string): Promise<any> {
