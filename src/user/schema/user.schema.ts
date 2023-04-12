@@ -6,7 +6,7 @@ export type UserDocument = User & Document;
 @Schema()
 export class User {
     @Prop()
-    uuid:string;
+    uuid: string;
     @Prop()
     userName: string;
     @Prop()
@@ -14,7 +14,7 @@ export class User {
     @Prop()
     password: string;
     @Prop()
-    refreshToken:string;
+    refreshToken: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

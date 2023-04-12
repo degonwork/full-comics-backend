@@ -8,10 +8,11 @@ import { PublisherController } from './publisher.controller';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{name:Publisher.name, schema: PublisherSchema}]),
+        MongooseModule.forFeature([{ name: Publisher.name, schema: PublisherSchema }]),
         ImageModule,
     ],
     providers: [PublisherService, PublisherRepository],
-    controllers: [PublisherController]
+    controllers: [PublisherController],
+    exports: [PublisherService, PublisherRepository]
 })
-export class PublisherModule {}
+export class PublisherModule { }

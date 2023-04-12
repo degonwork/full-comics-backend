@@ -31,4 +31,6 @@ export abstract class EntityRepository<T extends Document> {
         return this.entityModel.find().limit(limit).exec();
     }
 
+
+
 }
