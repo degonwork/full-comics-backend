@@ -42,9 +42,14 @@ export class CommicService {
         const imageThumnailRectangleObjectId = await this.commicRepository.createImage(createCommicDto.image_thumnail_rectangle);
         newCommic.image_thumnail_rectangle_id = imageThumnailRectangleObjectId;
         newCommic.categories_id = [];
-        for (const category of createCommicDto.categories) {
-            const categoryId = (await this.categoryService.createCategory(new CreateCategoryDto(category)))._id;
-            newCommic.categories_id.push(categoryId);
+        for (const categoryName of createCommicDto.categories) {
+            const category = await this.categoryService.findCategory(categoryName);
+            if (!category) {
+                const categoryId = (await this.categoryService.createCategory(new CreateCategoryDto(categoryName)))._id;
+                newCommic.categories_id.push(categoryId);
+                return await this.commicRepository.createObject(newCommic);
+            }
+            newCommic.categories_id.push(category._id);
         }
         return await this.commicRepository.createObject(newCommic);
     }
