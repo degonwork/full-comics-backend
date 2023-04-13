@@ -5,7 +5,7 @@ import { ExistingUser } from 'src/user/dto/existing-user.dto';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
 
-@Controller('auth')
+@Controller('userauth')
 export class AuthController {
     constructor(private authService: AuthService) { }
 

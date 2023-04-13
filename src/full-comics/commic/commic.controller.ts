@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { CommonConnectionOptions } from 'tls';
 import { CommicService } from './commic.service';
 import { CreateCommicDto } from './dto/create-commic.dto';
 import { LimitCommic } from './dto/limit-commic.dto';
@@ -28,4 +27,5 @@ export class CommicController {
     async findNewCommic(@Query() query: LimitCommic): Promise<Commic[]> {
         return this.commicService.findNewCommic(query.limit);
     }
+
 }

@@ -46,14 +46,9 @@ export class PublisherAuthService {
 
     }
 
-
-
     // logout
     async logout(publisher: PublisherDocument) {
-
         await this.publisherService.updateRefreshToken(publisher.publisherName, { refreshToken: null })
-        console.log(publisher.publisherName);
-
         return {
             statusCode: 200,
             message: 'Logout successfully'

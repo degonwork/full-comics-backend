@@ -25,7 +25,7 @@ export class PublisherController {
     @UseGuards(PublicAuthGuard)
     @Get(':publisherName')
     async getDetailPublisher(@Param('publisherName') publisherName: string): Promise<PublisherDocument> {
-        return this.publisherService.getByPublisherName(publisherName)
+        return this.publisherService.getByPublisherName(publisherName);
     }
 
     // update publisher
