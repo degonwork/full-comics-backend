@@ -8,7 +8,7 @@ import { ImageModule } from './image/image.module';
 import { CommicModule } from './full-comics/commic/commic.module';
 import { ChapterReadModule } from './chapter-read/chapter-read.module';
 import { CategoryModule } from './category/category.module';
-import { AuthModule } from './auth/users-auth/auth.module';
+import { AuthModule } from './auth/users-auth/user.auth.module';
 import { PublisherAuthModule } from './auth/publishers-auth/publisher.auth.module';
 
 

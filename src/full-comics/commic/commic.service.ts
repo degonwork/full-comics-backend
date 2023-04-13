@@ -47,9 +47,9 @@ export class CommicService {
             if (!category) {
                 const categoryId = (await this.categoryService.createCategory(new CreateCategoryDto(categoryName)))._id;
                 newCommic.categories_id.push(categoryId);
-                return await this.commicRepository.createObject(newCommic);
+            } else {
+                newCommic.categories_id.push(category._id);
             }
-            newCommic.categories_id.push(category._id);
         }
         return await this.commicRepository.createObject(newCommic);
     }
