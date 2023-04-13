@@ -108,11 +108,24 @@ export class PublisherService {
             body.password = await this.hashPassword(body.password);
             await this.publisherRepository.findOneObjectAndUpdate(publisher, body);
             return true
-
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
+    async deletePublisher(publisherName: string) {
+        const publisher = this.getByPublisherName(publisherName)
 
+        try {
+            if (!publisher) {
+                throw new HttpException("not found publisher", HttpStatus.UNAUTHORIZED);
+            }
+            await this.publisherRepository.findOneObjectAndDelete({ publisherName });
+            return true
+
+        } catch (e) {
+            throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+    }
 }

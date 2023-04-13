@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { PublisherService } from './publisher.service';
 import { Publisher, PublisherDocument } from './schema/publisher.schema';
 import { PublicAuthGuard } from 'src/auth/publishers-auth/guards/auth.guard';
@@ -30,8 +30,15 @@ export class PublisherController {
 
     // update publisher
     @UseGuards(PublicAuthGuard)
-    @Post('update/')
+    @Post('update')
     async updatePublisher(@Body() body: UpdatePublisherDto): Promise<boolean> {
         return this.publisherService.updatePublisher(body)
+    }
+
+    // delete publisher 
+    @UseGuards(PublicAuthGuard)
+    @Post('delete/:publisherName')
+    async deletePublisher(@Param('publisherName') publisherName: string): Promise<boolean> {
+        return this.publisherService.deletePublisher(publisherName)
     }
 }

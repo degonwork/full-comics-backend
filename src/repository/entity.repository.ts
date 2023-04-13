@@ -26,6 +26,9 @@ export abstract class EntityRepository<T extends Document> {
     async findOneObjectAndUpdate(entityFilterQuery: FilterQuery<T>, updateEntityData: UpdateQuery<any>): Promise<T> | null {
         return this.entityModel.findOneAndUpdate(entityFilterQuery, updateEntityData).exec();
     }
+    async findOneObjectAndDelete(entityFilterQuery: FilterQuery<T>): Promise<T> | null {
+        return this.entityModel.findOneAndDelete(entityFilterQuery).exec();
+    }
 
     async findObject(limit?: number): Promise<T[]> | null {
         return this.entityModel.find().limit(limit).exec();
