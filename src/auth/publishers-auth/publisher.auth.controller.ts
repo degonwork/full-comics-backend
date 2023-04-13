@@ -24,7 +24,7 @@ export class PublisherAuthController {
         return await this.publisherAuthService.refresh(bodyToken.refreshToken)
     }
 
-    @Post('logout')
+    @Get('logout')
     @UseGuards(PublicAuthGuard)
     async logout(@Req() req: any) {
         await this.publisherAuthService.logout(req.publisher)

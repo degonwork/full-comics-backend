@@ -19,6 +19,7 @@ import { PublisherAuthModule } from './auth/publishers-auth/publisher.auth.modul
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({ uri: configService.get("MONGO_URI") }),
       inject: [ConfigService],
+
     }),
     ChapterReadModule,
     AuthModule,
@@ -29,6 +30,7 @@ import { PublisherAuthModule } from './auth/publishers-auth/publisher.auth.modul
     PublisherModule,
     ImageModule,
     CategoryModule,
+
   ],
   controllers: [],
   providers: [],

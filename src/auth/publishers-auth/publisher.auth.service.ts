@@ -12,10 +12,6 @@ export class PublisherAuthService {
         private readonly publisherService: PublisherService,
         private readonly jwtService: JwtService) { }
 
-    //Brycpt
-    public async hashPassword(password: string): Promise<string> {
-        return await bcrypt.hash(password, 12);
-    }
 
     // Tao token
     private async _createToken(publisher: PublisherDocument, refresh: boolean): Promise<any> {
@@ -31,18 +27,11 @@ export class PublisherAuthService {
             return { accessToken };
         }
     }
-    // Kiem tra nguoi dung 
-    async validateUser(publisherName: string, password: string) {
-        const publisher = await this.publisherService.findbyPublishername(publisherName);
-        if (!publisher) return null;
-        const doesPasswordMath = await bcrypt.compare(password, publisher.password);
-        if (!doesPasswordMath) return null;
-        return this.publisherService.getDetailPublisher(publisher);
-    }
+
     // login
     async login(existingPublisher: ExistingPublisher) {
         const { publisherName, password } = existingPublisher;
-        const publisher = await this.validateUser(publisherName, password);
+        const publisher = await this.publisherService.validatePublisher(publisherName, password);
         if (!publisher) return "PublisherName is not registered or password is not correct";
         const token = await this._createToken(publisher, false);
         return { ...token };
@@ -52,15 +41,19 @@ export class PublisherAuthService {
         const existingPublisher = await this.publisherService.findbyPublishername(newPublisher.publisherName);
         if (existingPublisher)
             return "PublisherName Existed!";
-        newPublisher.password = await this.hashPassword(newPublisher.password);
+        newPublisher.password = await this.publisherService.hashPassword(newPublisher.password);
         return this.publisherService.createPublisher(newPublisher);
 
     }
 
 
+
     // logout
     async logout(publisher: PublisherDocument) {
+
         await this.publisherService.updateRefreshToken(publisher.publisherName, { refreshToken: null })
+        console.log(publisher.publisherName);
+
         return {
             statusCode: 200,
             message: 'Logout successfully'
@@ -73,12 +66,13 @@ export class PublisherAuthService {
             const payload = await this.jwtService.verify(refreshToken, {
                 secret: process.env.SECRETKEY_REFRESH
             });
-            const publisher = await this.publisherService.getPublisherByRefresh(refreshToken, payload.user.email);
+            const publisher = await this.publisherService.getPublisherByRefresh(refreshToken, payload.publisher.publisherName);
             const newAccessToken = await this._createToken(publisher, true);
             return newAccessToken;
         } catch (e) {
             return "Invalid token";
         }
     }
+
 
 }

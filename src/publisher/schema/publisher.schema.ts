@@ -7,9 +7,9 @@ export type PublisherDocument = Publisher & Document;
 
 @Schema()
 export class Publisher {
-    static find(): Publisher | PromiseLike<Publisher> {
-        throw new Error("Method not implemented.");
-    }
+    // static find(): Publisher | PromiseLike<Publisher> {
+    //     throw new Error("Method not implemented.");
+    // }
     @Prop()
     name: string;
     @Prop()

@@ -3,10 +3,31 @@ import { CreatePublisherDto } from './dto/create-publisher.dto';
 import { PublisherRepository } from './repository/publisher.repository';
 import { Publisher, PublisherDocument } from './schema/publisher.schema';
 import * as bcrypt from 'bcrypt';
+import { UpdatePublisherDto } from './dto/update-publisher.dto';
+
 
 @Injectable()
 export class PublisherService {
-    constructor(private readonly publisherRepository: PublisherRepository) { }
+    constructor(
+        private readonly publisherRepository: PublisherRepository
+
+    ) { }
+
+
+    //Brycpt
+    public async hashPassword(password: string): Promise<string> {
+        return await bcrypt.hash(password, 12);
+    }
+
+    // Kiem tra nguoi dung 
+    async validatePublisher(publisherName: string, password: string) {
+        const publisher = await this.findbyPublishername(publisherName);
+        if (!publisher) return null;
+        const doesPasswordMath = await bcrypt.compare(password, publisher.password);
+        if (!doesPasswordMath) return null;
+        return this.getDetailPublisher(publisher);
+    }
+
 
     //Lay du lieu publisher
     async getDetailPublisher(publisher: PublisherDocument): Promise<any> {
@@ -27,9 +48,10 @@ export class PublisherService {
     }
 
 
+
     // Refresh token
-    async updateRefreshToken(publisherName: string, update: { refreshToken: any; }) {
-        const existingPublisher = await this.findbyPublishername(publisherName);
+    async updateRefreshToken(publisherName: string, update: any) {
+        const existingPublisher = await this.publisherRepository.findOneObject({ publisherName });
         if (existingPublisher) {
             if (update.refreshToken) {
                 update.refreshToken = await bcrypt.hash(
@@ -66,6 +88,31 @@ export class PublisherService {
         }
     }
 
+    // get publisher detail
+    async getByPublisherName(publisherName: string): Promise<PublisherDocument> {
+        const publisher = this.publisherRepository.findOneObject({ publisherName });
+        if (!publisher) {
+            throw new HttpException("not found publisher", HttpStatus.UNAUTHORIZED);
 
+        }
+        return publisher;
+    }
+
+    // update publisher
+    async updatePublisher(body: UpdatePublisherDto) {
+        const publisher = this.getByPublisherName(body.publisherName)
+        try {
+            if (!publisher) {
+                throw new HttpException("not found publisher", HttpStatus.UNAUTHORIZED);
+            }
+            body.password = await this.hashPassword(body.password);
+            await this.publisherRepository.findOneObjectAndUpdate(publisher, body);
+            return true
+
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+    }
 
 }
