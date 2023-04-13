@@ -10,4 +10,8 @@ export class CategoryService {
     async createCategory(createCategoryDto: CreateCategoryDto): Promise<CategoryDocument> {
         return this.categoryRepository.createObject(createCategoryDto);
     }
+
+    async findCategory(name:string) : Promise<CategoryDocument> {
+        return this.categoryRepository.findOneObject({name});
+    }
 }
