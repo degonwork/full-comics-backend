@@ -28,6 +28,8 @@ export class Commic {
     new_update_time: string;
     @Prop()
     reads: number;
+    @Prop({ default: null })
+    publisher_id: string;
 }
 
 export const CommicSchema = SchemaFactory.createForClass(Commic);

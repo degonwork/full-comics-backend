@@ -33,4 +33,11 @@ export abstract class EntityRepository<T extends Document> {
     async findObject(limit?: number): Promise<T[]> | null {
         return this.entityModel.find().limit(limit).exec();
     }
+
+    async findObjectesBy(fieldName: string, fieldValue: any, limit?: number): Promise<T[]> | null {
+        const query: any = {};
+        query[fieldName] = fieldValue;
+        const result = await this.entityModel.find(query).limit(limit).exec();
+        return result;
+    }
 }
