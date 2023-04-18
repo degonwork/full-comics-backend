@@ -1,4 +1,4 @@
-import { Injectable  } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateImageDto } from './dto/create-image.dto';
 import { ImageRepository } from './repository/image.repository';
 import { ImageDocument, Image, } from './schema/image.schema';
@@ -12,6 +12,6 @@ export class ImageService {
     }
 
     async findImageById(_id: string): Promise<Image> {
-        return this.imageRepository.findOneObject({_id});
+        return this.imageRepository.findOneObject({ _id });
     }
 }

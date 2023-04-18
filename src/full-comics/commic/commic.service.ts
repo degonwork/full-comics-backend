@@ -36,6 +36,8 @@ export class CommicService {
         // createCommicDto.reads = 0;
         const newCommic = Object.assign(createCommicDto);
         const imageDetailId = await this.commicRepository.createImage(createCommicDto.image_detail);
+        console.log(imageDetailId);
+
         newCommic.image_detail_id = imageDetailId;
         const imageThumnailSquareObjectId = await this.commicRepository.createImage(createCommicDto.image_thumnail_square);
         newCommic.image_thumnail_square_id = imageThumnailSquareObjectId;
@@ -61,6 +63,15 @@ export class CommicService {
 
     async findCommicByIdAndUpdate(_id: string, updateCommicDto: UpdateCommicDto): Promise<Commic> {
         return this.commicRepository.findOneObjectAndUpdate({ _id }, updateCommicDto);
+    }
+    async findCommicByIdAndSetComicPublisher(_id: string, publisher_id: string): Promise<any> {
+        const commic = await this.commicRepository.findOneObject({ _id })
+        if (!commic.publisher_id) {
+            commic.publisher_id = publisher_id
+            return await this.commicRepository.findOneObjectAndUpdate({ _id }, commic)
+        }
+        return commic;
+
     }
 
     async findHotCommic(limit?: number): Promise<any> {

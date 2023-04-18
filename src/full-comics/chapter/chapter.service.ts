@@ -11,6 +11,7 @@ import { ChapterRepository } from './repository/chapter.repository';
 import { Chapter, ChapterDocument } from './schema/chapter.schema';
 import { Image } from '../../image/schema/image.schema';
 import { CreateChapterContentDto } from './dto/create-chapter-content.dto';
+import { Publisher } from 'src/publisher/schema/publisher.schema';
 
 @Injectable()
 export class ChapterService {
@@ -21,7 +22,7 @@ export class ChapterService {
         private readonly imageService: ImageService,
     ) { }
 
-    async createChapter(createChapterDto: CreateChapterDto): Promise<ChapterDocument> {
+    async createChapter(createChapterDto: CreateChapterDto, reqUser: any): Promise<ChapterDocument> {
         let updateCommicDto = new UpdateCommicDto([], '');
         let createChapterContent = new CreateChapterContentDto([]);
         // createChapterDto.reads = updateCommicDto.reads;
@@ -35,6 +36,8 @@ export class ChapterService {
         }
         newChapter.chapter_content = createChapterContent.chapterContentId;
         newChapter.publish_date = new Date().toLocaleString('en-GB', { hour12: false });
+        //Tao publisher_id
+        newChapter.publisher_id = reqUser.id;
         const chapter = await this.chapterRepository.createObject(createChapterDto);
         const image = (await this.imageService.findImageById(chapter.image_id)).path;
         const updateChaptersCommic = new UpdateChaptersCommic(chapter._id, image, chapter.chapter_intro);
@@ -42,6 +45,7 @@ export class ChapterService {
         updateCommicDto.chapters.push(updateChaptersCommic);
         updateCommicDto.new_update_time = chapter.publish_date;
         await this.commicService.findCommicByIdAndUpdate(createChapterDto.commic_id, updateCommicDto);
+        await this.commicService.findCommicByIdAndSetComicPublisher(createChapterDto.commic_id, newChapter.publisher_id);
         return chapter;
     }
 
@@ -80,6 +84,9 @@ export class ChapterService {
         return this.chapterRepository.findOneObjectAndUpdate({ _id }, updateChapterDto);
     }
 
+    async findAllChaptersByPublisherId(publisherId: any): Promise<ChapterDocument[]> {
+        return await this.chapterRepository.findObjectesBy('publisher_id', publisherId);
+    }
 }
 
 

@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { PublisherAuthService } from "./publisher.auth.service";
 import { CreatePublisherDto } from "src/publisher/dto/create-publisher.dto";
 import { ExistingPublisher } from "src/publisher/dto/existing-publisher.dto";
-import { PublicAuthGuard } from "./guards/auth.guard";
+import { PublisherAuthGuard } from "./guards/auth.guard";
 
 @Controller('publisherauth')
 export class PublisherAuthController {
@@ -24,7 +24,7 @@ export class PublisherAuthController {
     }
 
     @Get('logout')
-    @UseGuards(PublicAuthGuard)
+    @UseGuards(PublisherAuthGuard)
     async logout(@Req() req: any) {
         await this.publisherAuthService.logout(req.user)
         return { message: 'Logout successfully' };

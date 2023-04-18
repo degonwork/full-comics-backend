@@ -11,4 +11,5 @@ export class CreateCommicDto {
     chapters: string[];
     reads: number;
     categories: string[];
+    publisher_id: string
 }
