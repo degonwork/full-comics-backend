@@ -21,14 +21,14 @@ export class ChapterController {
     }
 
     // Lấy chi tiết của chapter
+    // @Get('/read-chapter/:id')
+    // async getChapterById(@Param('id') id: string): Promise<Chapter> {
+    //     return this.chapterService.findChapterById(id);
+    // }
+    //Đọc chapter
     @Get('/detail-chapter/:id')
-    async getChapterById(@Param('id') id: string): Promise<Chapter> {
-        return this.chapterService.findChapterById(id);
-    }
-    // Đọc chapter
-    @Get('/read-chapter/:id')
-    async readChapter(@Param("id") id: string, @Headers("uuid") uuid: string): Promise<Image[]> {
-        return this.chapterService.readChapter(id, uuid);
+    async detailChapters(@Param("id") id: string, @Headers("uuid") uuid: string): Promise<ChapterDocument> {
+        return this.chapterService.detailChapter(id, uuid);
     }
 
     @UseGuards(PublisherAuthGuard)
