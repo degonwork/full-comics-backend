@@ -11,7 +11,6 @@ import { ChapterRepository } from './repository/chapter.repository';
 import { Chapter, ChapterDocument } from './schema/chapter.schema';
 import { Image } from '../../image/schema/image.schema';
 import { CreateChapterContentDto } from './dto/create-chapter-content.dto';
-import { Publisher } from 'src/publisher/schema/publisher.schema';
 
 @Injectable()
 export class ChapterService {
@@ -24,7 +23,7 @@ export class ChapterService {
 
     async createChapter(createChapterDto: CreateChapterDto, reqUser: any): Promise<ChapterDocument> {
         let updateCommicDto = new UpdateCommicDto([], '');
-        let createChapterContent = new CreateChapterContentDto([]);
+        let listCreateChapterContent: CreateChapterContentDto[] = []
         // createChapterDto.reads = updateCommicDto.reads;
         const newChapter = Object.assign(createChapterDto);
         const imageObject = createChapterDto.image;
@@ -32,9 +31,10 @@ export class ChapterService {
         newChapter.image_id = imageId;
         for (const imageChapterContent of createChapterDto.chapter_content) {
             const imageIdChapterContent = await this.chapterRepository.createImage(imageChapterContent);
-            createChapterContent.chapterContentId.push(imageIdChapterContent);
+            const createChapterContent = new CreateChapterContentDto(imageIdChapterContent, imageChapterContent.path, imageChapterContent.type);
+            listCreateChapterContent.push(createChapterContent);
         }
-        newChapter.chapter_content = createChapterContent.chapterContentId;
+        newChapter.chapter_content = listCreateChapterContent;
         newChapter.publish_date = new Date().toLocaleString('en-GB', { hour12: false });
         //Tao publisher_id
         newChapter.publisher_id = reqUser.id;
@@ -55,8 +55,7 @@ export class ChapterService {
         return { ...new ResponseChapter(chapter, image) };
     }
 
-    async readChapter(id: string, uuid: string): Promise<Image[]> {
-        const listImage = [];
+    async detailChapter(id: string, uuid: string): Promise<ChapterDocument> {
         const chapter = (await this.findChapterById(id)).chapter;
         const chapterRead = await this.chapterReadService.createChapterRead(uuid, {
             chapter_id: id,
@@ -69,11 +68,7 @@ export class ChapterService {
         } else {
             console.log('Dont create');
         }
-        for (const image_id of chapter.chapter_content) {
-            const image = await this.imageService.findImageById(image_id);
-            listImage.push(image);
-        }
-        return listImage;
+        return chapter;
     }
 
     async findChapter(): Promise<Chapter[]> {

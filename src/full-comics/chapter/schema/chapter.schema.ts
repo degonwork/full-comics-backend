@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
+import { CreateChapterContentDto } from "../dto/create-chapter-content.dto";
 
 export type ChapterDocument = Chapter & Document;
 
@@ -12,13 +13,15 @@ export class Chapter {
     @Prop()
     publisher_id: string;
     @Prop()
-    chapter_content: string[];
+    chapter_content: CreateChapterContentDto[];
     @Prop()
     chapter_intro: string;
     @Prop()
     publish_date: string;
     @Prop()
     reads: number;
+    // @Prop({ type: [String], default: [] })
+    // user_id: string[];
 }
 
 export const ChapterSchema = SchemaFactory.createForClass(Chapter);
