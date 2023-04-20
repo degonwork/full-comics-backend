@@ -9,8 +9,9 @@ import { UpdateChapterDto } from './dto/update-chapter.dto';
 import { UpdateChaptersCommic } from './dto/update-chapters-commic.dto';
 import { ChapterRepository } from './repository/chapter.repository';
 import { Chapter, ChapterDocument } from './schema/chapter.schema';
-import { Image } from '../../image/schema/image.schema';
+import { ImageDocument } from '../../image/schema/image.schema';
 import { CreateChapterContentDto } from './dto/create-chapter-content.dto';
+import { CreateImageDto } from 'src/image/dto/create-image.dto';
 
 @Injectable()
 export class ChapterService {
@@ -21,14 +22,48 @@ export class ChapterService {
         private readonly imageService: ImageService,
     ) { }
 
+
+    // Tạo chapter = upload file
+    async createChapterFile(createChapterDto: CreateChapterDto, reqUser: any, imageContent: Express.Multer.File): Promise<ChapterDocument> {
+        let updateCommicDto = new UpdateCommicDto([], '');
+        let listCreateChapterContent: CreateChapterContentDto[] = []
+
+        // Tạo content 
+        for (const imageChapterContent of createChapterDto.chapter_content) {
+
+            const imageFileChapterContent = await this.imageService.createImageFile(imageChapterContent, imageContent);
+
+            const createChapterContent = new CreateChapterContentDto(imageFileChapterContent.id, imageFileChapterContent.path, imageFileChapterContent.type);
+
+            listCreateChapterContent.push(createChapterContent);
+        }
+
+
+        createChapterDto.chapter_content = listCreateChapterContent;
+        createChapterDto.publish_date = new Date().toLocaleString('en-GB', { hour12: false });
+        //Tao publisher_id
+        createChapterDto.publisher_id = reqUser.id;
+        const chapter = await this.chapterRepository.createObject(createChapterDto);
+        // const image = (await this.imageService.findImageById(chapter.image_banner_id)).path;
+        const updateChaptersCommic = new UpdateChaptersCommic(chapter._id, chapter.chapter_intro);
+        updateCommicDto.chapters = (await this.commicService.findCommicById(createChapterDto.commic_id)).commic.chapters;
+        updateCommicDto.chapters.push(updateChaptersCommic);
+        updateCommicDto.new_update_time = chapter.publish_date;
+        await this.commicService.findCommicByIdAndUpdate(createChapterDto.commic_id, updateCommicDto);
+        await this.commicService.findCommicByIdAndSetComicPublisher(createChapterDto.commic_id, createChapterDto.publisher_id);
+        return chapter;
+    }
+
+
+
+    // Tạo chapter = link
     async createChapter(createChapterDto: CreateChapterDto, reqUser: any): Promise<ChapterDocument> {
         let updateCommicDto = new UpdateCommicDto([], '');
         let listCreateChapterContent: CreateChapterContentDto[] = []
         // createChapterDto.reads = updateCommicDto.reads;
         const newChapter = Object.assign(createChapterDto);
-        const imageObject = createChapterDto.image;
-        const imageId = await this.chapterRepository.createImage(imageObject);
-        newChapter.image_id = imageId;
+
+        // Tạo content
         for (const imageChapterContent of createChapterDto.chapter_content) {
             const imageIdChapterContent = await this.chapterRepository.createImage(imageChapterContent);
             const createChapterContent = new CreateChapterContentDto(imageIdChapterContent, imageChapterContent.path, imageChapterContent.type);
@@ -39,8 +74,7 @@ export class ChapterService {
         //Tao publisher_id
         newChapter.publisher_id = reqUser.id;
         const chapter = await this.chapterRepository.createObject(createChapterDto);
-        const image = (await this.imageService.findImageById(chapter.image_id)).path;
-        const updateChaptersCommic = new UpdateChaptersCommic(chapter._id, image, chapter.chapter_intro);
+        const updateChaptersCommic = new UpdateChaptersCommic(chapter._id, chapter.chapter_intro);
         updateCommicDto.chapters = (await this.commicService.findCommicById(createChapterDto.commic_id)).commic.chapters;
         updateCommicDto.chapters.push(updateChaptersCommic);
         updateCommicDto.new_update_time = chapter.publish_date;
@@ -51,7 +85,7 @@ export class ChapterService {
 
     async findChapterById(_id: string): Promise<any> {
         const chapter = await this.chapterRepository.findOneObject({ _id });
-        const image = (await this.imageService.findImageById(chapter.image_id)).path;
+        const image = (await this.imageService.findImageById(chapter.id)).path;
         return { ...new ResponseChapter(chapter, image) };
     }
 
@@ -81,6 +115,11 @@ export class ChapterService {
 
     async findAllChaptersByPublisherId(publisherId: any): Promise<ChapterDocument[]> {
         return await this.chapterRepository.findObjectesBy('publisher_id', publisherId);
+    }
+
+
+    async createImageFile(createImageDto: CreateImageDto, file: Express.Multer.File): Promise<ImageDocument> {
+        return await this.imageService.createImageFile(createImageDto, file)
     }
 }
 

@@ -19,8 +19,11 @@ export class CommicService {
     ) { }
 
     async getCommicOption(commic: CommicDocument, isDetail: boolean): Promise<any> {
+        console.log(commic);
+
         const image = {
             image_detail: (await this.imageService.findImageById(commic.image_detail_id)).path,
+
             image_thumnail_square: (await this.imageService.findImageById(commic.image_thumnail_square_id)).path,
             image_thumnail_rectangle: (await this.imageService.findImageById(commic.image_thumnail_rectangle_id)).path
         };
@@ -58,6 +61,7 @@ export class CommicService {
 
     async findCommicById(_id: string): Promise<any> {
         const commic = await this.commicRepository.findOneObject({ _id });
+
         return this.getCommicOption(commic, false);
     }
 

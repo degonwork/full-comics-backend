@@ -11,7 +11,15 @@ export class ImageService {
         return this.imageRepository.createObject(createImageDto);
     }
 
+    async createImageFile(createImageDto: CreateImageDto, image: Express.Multer.File): Promise<ImageDocument> {
+
+        createImageDto.path = image.path
+        return this.imageRepository.createObject(createImageDto);
+    }
+
+
     async findImageById(_id: string): Promise<Image> {
-        return this.imageRepository.findOneObject({ _id });
+        return await this.imageRepository.findOneObject({ _id });
+
     }
 }

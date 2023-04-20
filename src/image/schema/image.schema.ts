@@ -3,7 +3,7 @@ import { Document } from "mongoose";
 
 export type ImageDocument = Image & Document;
 
-export enum TypeImage  {
+export enum TypeImage {
     COMMIC = 'commic',
     CHAPTER = 'chapter',
     CONTENT = 'content',

@@ -6,8 +6,8 @@ export type ChapterDocument = Chapter & Document;
 
 @Schema()
 export class Chapter {
-    @Prop()
-    image_id: string;
+    // @Prop()
+    // image_banner_id: string;
     @Prop()
     commic_id: string;
     @Prop()
