@@ -1,9 +1,9 @@
 {
-  "lastRun": null,
+  "lastRun": "1681903790641-add-age-to-publishers.ts",
   "migrations": [
     {
       "title": "1681903790641-add-age-to-publishers.ts",
-      "timestamp": null
+      "timestamp": 1681956063315
     },
     {
       "title": "1681905788393-add-sex-to-publisher.js",
