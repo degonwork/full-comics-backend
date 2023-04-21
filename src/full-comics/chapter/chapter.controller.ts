@@ -4,7 +4,7 @@ import { CreateChapterDto } from './dto/create-chapter.dto';
 import { Chapter, ChapterDocument } from './schema/chapter.schema';
 import { Image, ImageDocument } from '../../image/schema/image.schema';
 import { PublisherAuthGuard } from 'src/auth/publishers-auth/guards/auth.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CreateImageDto } from 'src/image/dto/create-image.dto';
 import { ImageService } from 'src/image/image.service';
 import { Response } from 'express';
@@ -17,20 +17,20 @@ export class ChapterController {
     ) { }
 
     // Tạo chapter mới = link
-    @UseGuards(PublisherAuthGuard)
-    @Post('create')
-    async createChapter(@Body() createChapterDto: CreateChapterDto, @Req() req: any): Promise<ChapterDocument | string> {
-        const reqUser = req.user
-        return this.chapterService.createChapter(createChapterDto, reqUser);
-    }
+    // @UseGuards(PublisherAuthGuard)
+    // @Post('create')
+    // async createChapter(@Body() createChapterDto: CreateChapterDto, @Req() req: any): Promise<ChapterDocument | string> {
+    //     const reqUser = req.user
+    //     return this.chapterService.createChapter(createChapterDto, reqUser);
+    // }
 
     // Tạo chapter mới = upload
     @UseGuards(PublisherAuthGuard)
     @Post('createFile')
-    @UseInterceptors(FileInterceptor('image'))
-    async createChapterFile(@Body() createChapterDto: CreateChapterDto, @Req() req: any, @UploadedFile() image: Express.Multer.File): Promise<ChapterDocument | string> {
+    @UseInterceptors(FilesInterceptor('images'))
+    async createChapterFile(@Body() createChapterDto: CreateChapterDto, @Req() req: any, @UploadedFiles() images: Array<Express.Multer.File>): Promise<ChapterDocument | string> {
         const reqUser = req.user
-        return this.chapterService.createChapterFile(createChapterDto, reqUser, image);
+        return this.chapterService.createChapterFile(createChapterDto, reqUser, images);
     }
 
     // Lấy chi tiết của chapter
@@ -57,18 +57,6 @@ export class ChapterController {
     async createImage(@Body() createImageDto: CreateImageDto, @UploadedFile() image: Express.Multer.File): Promise<any> {
         // return await this.chapterService.createImageFile(createImageDto, File);
         return await this.imageService.createImageFile(createImageDto, image);
-    }
-
-    @Get('photos/:id')
-    async getAllPhotosById(@Param('id') id: string): Promise<Chapter> {
-        return this.chapterService.findPhotoById(id);
-    }
-
-    @Get("picture/:filename")
-    async getPicture(@Param('filename') filename, @Res() res: Response): Promise<void> {
-        console.log(filename);
-
-        res.sendFile(filename, { root: './uploads' })
     }
 
 }

@@ -12,8 +12,13 @@ export enum TypeImage {
 
 @Schema()
 export class Image {
+
     @Prop()
+    fileName: string;
+
+    @Prop({ default: null })
     path: string;
+
     @Prop()
     type: TypeImage;
 }

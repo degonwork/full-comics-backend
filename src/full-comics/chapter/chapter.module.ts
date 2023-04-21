@@ -16,13 +16,17 @@ import { extname } from 'path';
 @Module({
     imports: [
         MulterModule.register({
+            dest: './uploads',
             storage: diskStorage({
                 destination: './uploads',
-                filename: (req, file, callback) => {
+                filename: (req, file, cb) => {
                     const randomName = Array(32).fill(null).map(() => Math.round(Math.random() * 16).toString(16)).join('');
-                    callback(null, `${randomName}${extname(file.originalname)}`);
+                    return cb(null, `${randomName}${extname(file.originalname)}`);
                 },
             }),
+            limits: {
+                fileSize: 5 * 1024 * 1024, // Giới hạn dung lượng file 5MB
+            },
         }),
         MongooseModule.forFeature([{ name: Chapter.name, schema: ChapterSchema }]),
         ImageModule,

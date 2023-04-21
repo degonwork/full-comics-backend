@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CommicService } from './commic.service';
 import { CreateCommicDto } from './dto/create-commic.dto';
 import { LimitCommic } from './dto/limit-commic.dto';
 import { Commic, CommicDocument } from './schema/commic.schema';
 import { PublisherAuthGuard } from 'src/auth/publishers-auth/guards/auth.guard';
+import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('commic')
 export class CommicController {
@@ -11,8 +12,18 @@ export class CommicController {
 
     @UseGuards(PublisherAuthGuard)
     @Post('create')
-    async createCommic(@Body() createCommicDto: CreateCommicDto): Promise<CommicDocument> {
-        return this.commicService.createCommic(createCommicDto);
+    @UseInterceptors(FileFieldsInterceptor([
+        { name: 'image', maxCount: 1 },
+        { name: 'image_thumnail_square', maxCount: 1 },
+        { name: 'image_thumnail_rectangle', maxCount: 1 },
+    ]))
+
+    async createCommic(
+        @Body() createCommicDto: CreateCommicDto,
+        @UploadedFiles() files: { image: Express.Multer.File, image_thumnail_square: Express.Multer.File, image_thumnail_rectangle: Express.Multer.File }
+
+    ): Promise<CommicDocument> {
+        return this.commicService.createCommic(createCommicDto, files.image, files.image_thumnail_square, files.image_thumnail_rectangle);
     }
 
     @Get("/detail-commic/:id")

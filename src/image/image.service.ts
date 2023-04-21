@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateImageDto } from './dto/create-image.dto';
 import { ImageRepository } from './repository/image.repository';
 import { ImageDocument, Image, } from './schema/image.schema';
+import { Response } from 'express';
 
 @Injectable()
 export class ImageService {
@@ -12,14 +13,28 @@ export class ImageService {
     }
 
     async createImageFile(createImageDto: CreateImageDto, image: Express.Multer.File): Promise<ImageDocument> {
+        createImageDto.fileName = image.filename
+        const result = await this.imageRepository.createObject(createImageDto)
 
-        createImageDto.path = image.path
-        return this.imageRepository.createObject(createImageDto);
+        return result;
+
+    }
+
+    async findImagesById(id: string): Promise<Image[]> {
+
+        return this.imageRepository.findById(id);
     }
 
 
     async findImageById(_id: string): Promise<Image> {
         return await this.imageRepository.findOneObject({ _id });
+
+
+    }
+
+    async getImage(filename: string, res: Response) {
+
+        res.sendFile(filename, { root: './uploads' })
 
     }
 }

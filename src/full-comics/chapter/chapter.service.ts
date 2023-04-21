@@ -24,20 +24,20 @@ export class ChapterService {
 
 
     // Tạo chapter = upload file
-    async createChapterFile(createChapterDto: CreateChapterDto, reqUser: any, imageContent: Express.Multer.File): Promise<ChapterDocument> {
+    async createChapterFile(createChapterDto: CreateChapterDto, reqUser: any, imageContents: Express.Multer.File[]): Promise<ChapterDocument> {
         let updateCommicDto = new UpdateCommicDto([], '');
         let listCreateChapterContent: CreateChapterContentDto[] = []
 
         // Tạo content 
         for (const imageChapterContent of createChapterDto.chapter_content) {
+            for (const imageContent of imageContents) {
+                const imageFileChapterContent = await this.imageService.createImageFile(imageChapterContent, imageContent);
 
-            const imageFileChapterContent = await this.imageService.createImageFile(imageChapterContent, imageContent);
-            console.log(imageFileChapterContent);
-            
+                const createChapterContent = new CreateChapterContentDto(imageFileChapterContent.id, imageFileChapterContent.fileName, imageFileChapterContent.type);
 
-            const createChapterContent = new CreateChapterContentDto(imageFileChapterContent.id, imageFileChapterContent.path, imageFileChapterContent.type);
+                listCreateChapterContent.push(createChapterContent);
+            }
 
-            listCreateChapterContent.push(createChapterContent);
         }
 
 
@@ -59,41 +59,44 @@ export class ChapterService {
 
 
     // Tạo chapter = link
-    async createChapter(createChapterDto: CreateChapterDto, reqUser: any): Promise<ChapterDocument> {
-        let updateCommicDto = new UpdateCommicDto([], '');
-        let listCreateChapterContent: CreateChapterContentDto[] = []
-        // createChapterDto.reads = updateCommicDto.reads;
-        const newChapter = Object.assign(createChapterDto);
+    // async createChapter(createChapterDto: CreateChapterDto, reqUser: any): Promise<ChapterDocument> {
+    //     let updateCommicDto = new UpdateCommicDto([], '');
+    //     let listCreateChapterContent: CreateChapterContentDto[] = []
+    //     // createChapterDto.reads = updateCommicDto.reads;
+    //     const newChapter = Object.assign(createChapterDto);
 
-        // Tạo content
-        for (const imageChapterContent of createChapterDto.chapter_content) {
-            const imageIdChapterContent = await this.chapterRepository.createImage(imageChapterContent);
-            const createChapterContent = new CreateChapterContentDto(imageIdChapterContent, imageChapterContent.path, imageChapterContent.type);
-            listCreateChapterContent.push(createChapterContent);
-        }
-        newChapter.chapter_content = listCreateChapterContent;
-        newChapter.publish_date = new Date().toLocaleString('en-GB', { hour12: false });
-        //Tao publisher_id
-        newChapter.publisher_id = reqUser.id;
-        const chapter = await this.chapterRepository.createObject(createChapterDto);
-        const updateChaptersCommic = new UpdateChaptersCommic(chapter._id, chapter.chapter_intro);
-        updateCommicDto.chapters = (await this.commicService.findCommicById(createChapterDto.commic_id)).commic.chapters;
-        updateCommicDto.chapters.push(updateChaptersCommic);
-        updateCommicDto.new_update_time = chapter.publish_date;
-        await this.commicService.findCommicByIdAndUpdate(createChapterDto.commic_id, updateCommicDto);
-        await this.commicService.findCommicByIdAndSetComicPublisher(createChapterDto.commic_id, newChapter.publisher_id);
-        return chapter;
-    }
+    //     // Tạo content
+    //     for (const imageChapterContent of createChapterDto.chapter_content) {
+    //         const imageIdChapterContent = await this.chapterRepository.createImage(imageChapterContent);
+    //         const createChapterContent = new CreateChapterContentDto(imageIdChapterContent, imageChapterContent.fileName, imageChapterContent.type);
+    //         listCreateChapterContent.push(createChapterContent);
+    //     }
+    //     newChapter.chapter_content = listCreateChapterContent;
+    //     newChapter.publish_date = new Date().toLocaleString('en-GB', { hour12: false });
+    //     //Tao publisher_id
+    //     newChapter.publisher_id = reqUser.id;
+    //     const chapter = await this.chapterRepository.createObject(createChapterDto);
+    //     const updateChaptersCommic = new UpdateChaptersCommic(chapter._id, chapter.chapter_intro);
+    //     updateCommicDto.chapters = (await this.commicService.findCommicById(createChapterDto.commic_id)).commic.chapters;
+    //     updateCommicDto.chapters.push(updateChaptersCommic);
+    //     updateCommicDto.new_update_time = chapter.publish_date;
+    //     await this.commicService.findCommicByIdAndUpdate(createChapterDto.commic_id, updateCommicDto);
+    //     await this.commicService.findCommicByIdAndSetComicPublisher(createChapterDto.commic_id, newChapter.publisher_id);
+    //     return chapter;
+    // }
+
 
     async findChapterById(_id: string): Promise<any> {
         const chapter = await this.chapterRepository.findOneObject({ _id });
-        const image = (await this.imageService.findImageById(chapter.id)).path;
-        return { ...new ResponseChapter(chapter, image) };
+
+        const imageIds = chapter.chapter_content.map((content) => content.image_id);
+        const images = await Promise.all(imageIds.map((id) => this.imageService.findImageById(id)));
+        const imageUrls = images.map((image) => `http://localhost:3000/image/${image.fileName}`);
+        return { ...new ResponseChapter(chapter, imageUrls) };
     }
-    async findPhotoById(_id: string): Promise<any> {
-        const image = await this.chapterRepository.findOneObject({ _id });
-        return image;
-    }
+
+
+
     async detailChapter(id: string, uuid: string): Promise<ChapterDocument> {
         const chapter = (await this.findChapterById(id)).chapter;
         const chapterRead = await this.chapterReadService.createChapterRead(uuid, {

@@ -19,14 +19,13 @@ export class CommicService {
     ) { }
 
     async getCommicOption(commic: CommicDocument, isDetail: boolean): Promise<any> {
-        console.log(commic);
 
         const image = {
-            image_detail: (await this.imageService.findImageById(commic.image_detail_id)).path,
-
-            image_thumnail_square: (await this.imageService.findImageById(commic.image_thumnail_square_id)).path,
-            image_thumnail_rectangle: (await this.imageService.findImageById(commic.image_thumnail_rectangle_id)).path
+            image_detail: (await this.imageService.findImageById(commic.image_detail_id)).fileName,
+            image_thumnail_square: (await this.imageService.findImageById(commic.image_thumnail_square_id)).fileName,
+            image_thumnail_rectangle: (await this.imageService.findImageById(commic.image_thumnail_rectangle_id)).fileName
         };
+
         if (!isDetail) { return new ResponseCommic(commic, image); }
         return {
             id: commic._id,
@@ -35,17 +34,16 @@ export class CommicService {
         }
     }
 
-    async createCommic(createCommicDto: CreateCommicDto): Promise<CommicDocument> {
+    async createCommic(createCommicDto: CreateCommicDto, image: Express.Multer.File, image_thumnail_square: Express.Multer.File, image_thumnail_rectangle: Express.Multer.File): Promise<CommicDocument> {
         // createCommicDto.reads = 0;
-        const newCommic = Object.assign(createCommicDto);
-        const imageDetailId = await this.commicRepository.createImage(createCommicDto.image_detail);
-        console.log(imageDetailId);
 
-        newCommic.image_detail_id = imageDetailId;
-        const imageThumnailSquareObjectId = await this.commicRepository.createImage(createCommicDto.image_thumnail_square);
-        newCommic.image_thumnail_square_id = imageThumnailSquareObjectId;
-        const imageThumnailRectangleObjectId = await this.commicRepository.createImage(createCommicDto.image_thumnail_rectangle);
-        newCommic.image_thumnail_rectangle_id = imageThumnailRectangleObjectId;
+        const newCommic = Object.assign(createCommicDto);
+        const imageDetail = await this.imageService.createImageFile(createCommicDto.image_detail, image);
+        newCommic.image_detail_id = imageDetail[0].id;
+        const imageThumnailSquareObject = await this.imageService.createImageFile(createCommicDto.image_thumnail_square, image_thumnail_square);
+        newCommic.image_thumnail_square_id = imageThumnailSquareObject[0].id;
+        const imageThumnailRectangleObject = await this.imageService.createImageFile(createCommicDto.image_thumnail_rectangle, image_thumnail_rectangle);
+        newCommic.image_thumnail_rectangle_id = imageThumnailRectangleObject[0].id;
         newCommic.categories_id = [];
         for (const categoryName of createCommicDto.categories) {
             const category = await this.categoryService.findCategory(categoryName);

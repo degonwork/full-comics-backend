@@ -6,20 +6,26 @@ import { ImageRepository } from './repository/image.repository';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { ImageController } from './image.controller';
 
 @Module({
     imports: [
         MulterModule.register({
+            dest: './uploads',
             storage: diskStorage({
-                destination: 'src/uploads',
-                filename: (req, file, callback) => {
+                destination: './uploads',
+                filename: (req, file, cb) => {
                     const randomName = Array(32).fill(null).map(() => Math.round(Math.random() * 16).toString(16)).join('');
-                    callback(null, `${randomName}${extname(file.originalname)}`);
+                    return cb(null, `${randomName}${extname(file.originalname)}`);
                 },
             }),
+            limits: {
+                fileSize: 5 * 1024 * 1024, // Giới hạn dung lượng file 5MB
+            },
         }),
         MongooseModule.forFeature([{ name: Image.name, schema: ImageSchema }]),
     ],
+    controllers: [ImageController],
     providers: [ImageService, ImageRepository],
     exports: [ImageService],
 })
