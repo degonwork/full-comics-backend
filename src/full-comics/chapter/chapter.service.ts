@@ -32,6 +32,8 @@ export class ChapterService {
         for (const imageChapterContent of createChapterDto.chapter_content) {
 
             const imageFileChapterContent = await this.imageService.createImageFile(imageChapterContent, imageContent);
+            console.log(imageFileChapterContent);
+            
 
             const createChapterContent = new CreateChapterContentDto(imageFileChapterContent.id, imageFileChapterContent.path, imageFileChapterContent.type);
 
@@ -88,7 +90,10 @@ export class ChapterService {
         const image = (await this.imageService.findImageById(chapter.id)).path;
         return { ...new ResponseChapter(chapter, image) };
     }
-
+    async findPhotoById(_id: string): Promise<any> {
+        const image = await this.chapterRepository.findOneObject({ _id });
+        return image;
+    }
     async detailChapter(id: string, uuid: string): Promise<ChapterDocument> {
         const chapter = (await this.findChapterById(id)).chapter;
         const chapterRead = await this.chapterReadService.createChapterRead(uuid, {

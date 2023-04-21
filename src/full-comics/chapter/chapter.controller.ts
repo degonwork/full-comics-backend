@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Param, Post, Req, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Param, Post, Req, Res, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ChapterService } from './chapter.service';
 import { CreateChapterDto } from './dto/create-chapter.dto';
 import { Chapter, ChapterDocument } from './schema/chapter.schema';
@@ -7,7 +7,7 @@ import { PublisherAuthGuard } from 'src/auth/publishers-auth/guards/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateImageDto } from 'src/image/dto/create-image.dto';
 import { ImageService } from 'src/image/image.service';
-
+import { Response } from 'express';
 
 @Controller('chapter')
 export class ChapterController {
@@ -34,10 +34,10 @@ export class ChapterController {
     }
 
     // Lấy chi tiết của chapter
-    // @Get('/read-chapter/:id')
-    // async getChapterById(@Param('id') id: string): Promise<Chapter> {
-    //     return this.chapterService.findChapterById(id);
-    // }
+    @Get('/read-chapter/:id')
+    async getChapterById(@Param('id') id: string): Promise<Chapter> {
+        return this.chapterService.findChapterById(id);
+    }
 
 
     //Đọc chapter
@@ -57,6 +57,18 @@ export class ChapterController {
     async createImage(@Body() createImageDto: CreateImageDto, @UploadedFile() image: Express.Multer.File): Promise<any> {
         // return await this.chapterService.createImageFile(createImageDto, File);
         return await this.imageService.createImageFile(createImageDto, image);
+    }
+
+    @Get('photos/:id')
+    async getAllPhotosById(@Param('id') id: string): Promise<Chapter> {
+        return this.chapterService.findPhotoById(id);
+    }
+
+    @Get("picture/:filename")
+    async getPicture(@Param('filename') filename, @Res() res: Response): Promise<void> {
+        console.log(filename);
+
+        res.sendFile(filename, { root: './uploads' })
     }
 
 }
