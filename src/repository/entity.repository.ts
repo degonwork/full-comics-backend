@@ -48,4 +48,8 @@ export abstract class EntityRepository<T extends Document> {
         const result = await this.entityModel.find(query).limit(limit).exec();
         return result;
     }
+    async find(entityFilterQuery: FilterQuery<T>): Promise<T[]> {
+        return this.entityModel.find(entityFilterQuery).exec();
+    }
+
 }

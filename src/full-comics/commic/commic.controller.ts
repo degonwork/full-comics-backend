@@ -4,9 +4,10 @@ import { CreateCommicDto } from './dto/create-commic.dto';
 import { LimitCommic } from './dto/limit-commic.dto';
 import { Commic, CommicDocument } from './schema/commic.schema';
 import { PublisherAuthGuard } from 'src/auth/publishers-auth/guards/auth.guard';
-import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { ResponseComic } from './dto/response_comic.dto';
 
-@Controller('commic')
+@Controller('comics')
 export class CommicController {
     constructor(private readonly commicService: CommicService) { }
 
@@ -26,17 +27,17 @@ export class CommicController {
         return this.commicService.createCommic(createCommicDto, files.image, files.image_thumnail_square, files.image_thumnail_rectangle);
     }
 
-    @Get("/detail-commic/:id")
-    async findCommicById(@Param("id") id: string): Promise<Commic | Commic[]> {
+    @Get("/:id")
+    async findCommicById(@Param("id") id: string): Promise<ResponseComic> {
         return this.commicService.findCommicById(id);
     }
 
-    @Get('hot-commic')
+    @Get('hot-comic')
     async findHotCommic(@Query() query: LimitCommic): Promise<Commic[]> {
         return this.commicService.findHotCommic(query.limit);
     }
 
-    @Get('new-commic')
+    @Get('new-comic')
     async findNewCommic(@Query() query: LimitCommic): Promise<Commic[]> {
         return this.commicService.findNewCommic(query.limit);
     }

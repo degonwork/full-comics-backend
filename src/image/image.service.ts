@@ -13,13 +13,19 @@ export class ImageService {
     }
 
     async createImageFile(createImageDto: CreateImageDto, image: Express.Multer.File): Promise<ImageDocument> {
-        createImageDto.fileName = image.filename
+        createImageDto.path = `http://localhost:3000/image/${image.filename}`
         const result = await this.imageRepository.createObject(createImageDto)
 
         return result;
 
     }
+    async createComicImageFile(createImageDto: CreateImageDto, image: Express.Multer.File): Promise<ImageDocument> {
+        createImageDto[0].path = `http://localhost:3000/image/${image[0].filename}`
+        const result = await this.imageRepository.createObject(createImageDto)
 
+        return result;
+
+    }
     async findImagesById(id: string): Promise<Image[]> {
 
         return this.imageRepository.findById(id);

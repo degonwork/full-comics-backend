@@ -15,7 +15,7 @@ export class Commic {
     @Prop()
     title: string;
     @Prop()
-    categories_id: string[];
+    categories: string[];
     @Prop()
     author: string;
     @Prop()

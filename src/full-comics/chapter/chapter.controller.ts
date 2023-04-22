@@ -9,7 +9,7 @@ import { CreateImageDto } from 'src/image/dto/create-image.dto';
 import { ImageService } from 'src/image/image.service';
 import { Response } from 'express';
 
-@Controller('chapter')
+@Controller('chapters')
 export class ChapterController {
     constructor(
         private readonly chapterService: ChapterService,
@@ -34,7 +34,7 @@ export class ChapterController {
     }
 
     // Lấy chi tiết của chapter
-    @Get('/read-chapter/:id')
+    @Get('/:id')
     async getChapterById(@Param('id') id: string): Promise<Chapter> {
         return this.chapterService.findChapterById(id);
     }

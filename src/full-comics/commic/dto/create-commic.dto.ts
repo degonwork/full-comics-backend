@@ -1,3 +1,4 @@
+import { CreateCategoryDto } from "src/category/dto/create-category.dto";
 import { CreateImageDto } from "../../../image/dto/create-image.dto";
 
 export class CreateCommicDto {

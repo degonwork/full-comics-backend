@@ -1,3 +1,6 @@
+
+
 export class CreateCategoryDto {
-   constructor(private readonly name: string) {};
+   constructor(
+      public readonly name: string) { };
 }

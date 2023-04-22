@@ -30,25 +30,25 @@ export class ChapterService {
 
         // Tạo content 
         for (const imageChapterContent of createChapterDto.chapter_content) {
+
             for (const imageContent of imageContents) {
+
                 const imageFileChapterContent = await this.imageService.createImageFile(imageChapterContent, imageContent);
 
-                const createChapterContent = new CreateChapterContentDto(imageFileChapterContent.id, imageFileChapterContent.fileName, imageFileChapterContent.type);
+                const createChapterContent = new CreateChapterContentDto(imageFileChapterContent.id, imageFileChapterContent.path, imageFileChapterContent.type);
 
                 listCreateChapterContent.push(createChapterContent);
             }
 
         }
-
-
         createChapterDto.chapter_content = listCreateChapterContent;
         createChapterDto.publish_date = new Date().toLocaleString('en-GB', { hour12: false });
         //Tao publisher_id
         createChapterDto.publisher_id = reqUser.id;
         const chapter = await this.chapterRepository.createObject(createChapterDto);
         // const image = (await this.imageService.findImageById(chapter.image_banner_id)).path;
-        const updateChaptersCommic = new UpdateChaptersCommic(chapter._id, chapter.chapter_intro);
-        updateCommicDto.chapters = (await this.commicService.findCommicById(createChapterDto.commic_id)).commic.chapters;
+        const updateChaptersCommic = new UpdateChaptersCommic(chapter.id, chapter.chapter_des);
+        updateCommicDto.chapters = (await this.commicService.findCommicById(createChapterDto.commic_id)).chapters;
         updateCommicDto.chapters.push(updateChaptersCommic);
         updateCommicDto.new_update_time = chapter.publish_date;
         await this.commicService.findCommicByIdAndUpdate(createChapterDto.commic_id, updateCommicDto);
@@ -88,10 +88,10 @@ export class ChapterService {
 
     async findChapterById(_id: string): Promise<any> {
         const chapter = await this.chapterRepository.findOneObject({ _id });
-
         const imageIds = chapter.chapter_content.map((content) => content.image_id);
         const images = await Promise.all(imageIds.map((id) => this.imageService.findImageById(id)));
-        const imageUrls = images.map((image) => `http://localhost:3000/image/${image.fileName}`);
+        const imageUrls = images.map((image) => image.path);
+
         return { ...new ResponseChapter(chapter, imageUrls) };
     }
 

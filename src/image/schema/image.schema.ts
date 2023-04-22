@@ -14,9 +14,6 @@ export enum TypeImage {
 export class Image {
 
     @Prop()
-    fileName: string;
-
-    @Prop({ default: null })
     path: string;
 
     @Prop()

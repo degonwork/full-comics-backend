@@ -15,7 +15,7 @@ export class Chapter {
     @Prop()
     chapter_content: CreateChapterContentDto[];
     @Prop()
-    chapter_intro: string;
+    chapter_des: string;
     @Prop()
     publish_date: string;
     @Prop()

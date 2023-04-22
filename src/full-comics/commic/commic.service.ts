@@ -4,10 +4,10 @@ import { CreateCommicDto } from './dto/create-commic.dto';
 import { CommicRepository } from './repository/commic.repository';
 import { UpdateCommicDto } from './dto/update-commic.dto';
 import { ImageService } from '../../image/image.service';
-import { ResponseCommic } from './dto/response-commic.dto';
 import { ChapterService } from '../chapter/chapter.service';
 import { CategoryService } from '../../category/category.service';
 import { CreateCategoryDto } from '../../category/dto/create-category.dto';
+import { ResponseComic } from './dto/response_comic.dto';
 
 @Injectable()
 export class CommicService {
@@ -18,49 +18,53 @@ export class CommicService {
         private readonly categoryService: CategoryService,
     ) { }
 
+
     async getCommicOption(commic: CommicDocument, isDetail: boolean): Promise<any> {
 
-        const image = {
-            image_detail: (await this.imageService.findImageById(commic.image_detail_id)).fileName,
-            image_thumnail_square: (await this.imageService.findImageById(commic.image_thumnail_square_id)).fileName,
-            image_thumnail_rectangle: (await this.imageService.findImageById(commic.image_thumnail_rectangle_id)).fileName
+        const comicPath = {
+            image_detail_path: (await this.imageService.findImageById(commic.image_detail_id)).path,
+            image_thumnail_square_path: (await this.imageService.findImageById(commic.image_thumnail_square_id)).path,
+            image_thumnail_rectangle_path: (await this.imageService.findImageById(commic.image_thumnail_rectangle_id)).path
         };
 
-        if (!isDetail) { return new ResponseCommic(commic, image); }
-        return {
-            id: commic._id,
-            title: commic.title,
-            image: image,
-        }
+        if (!isDetail) { return new ResponseComic(commic, comicPath); }
+
+        return new ResponseComic(commic, comicPath)
+
     }
+
 
     async createCommic(createCommicDto: CreateCommicDto, image: Express.Multer.File, image_thumnail_square: Express.Multer.File, image_thumnail_rectangle: Express.Multer.File): Promise<CommicDocument> {
         // createCommicDto.reads = 0;
 
         const newCommic = Object.assign(createCommicDto);
-        const imageDetail = await this.imageService.createImageFile(createCommicDto.image_detail, image);
+        const imageDetail = await this.imageService.createComicImageFile(createCommicDto.image_detail, image);
         newCommic.image_detail_id = imageDetail[0].id;
-        const imageThumnailSquareObject = await this.imageService.createImageFile(createCommicDto.image_thumnail_square, image_thumnail_square);
+        const imageThumnailSquareObject = await this.imageService.createComicImageFile(createCommicDto.image_thumnail_square, image_thumnail_square);
         newCommic.image_thumnail_square_id = imageThumnailSquareObject[0].id;
-        const imageThumnailRectangleObject = await this.imageService.createImageFile(createCommicDto.image_thumnail_rectangle, image_thumnail_rectangle);
+        const imageThumnailRectangleObject = await this.imageService.createComicImageFile(createCommicDto.image_thumnail_rectangle, image_thumnail_rectangle);
         newCommic.image_thumnail_rectangle_id = imageThumnailRectangleObject[0].id;
-        newCommic.categories_id = [];
+        newCommic.categories_name = [];
+
         for (const categoryName of createCommicDto.categories) {
+
             const category = await this.categoryService.findCategory(categoryName);
+
             if (!category) {
-                const categoryId = (await this.categoryService.createCategory(new CreateCategoryDto(categoryName)))._id;
-                newCommic.categories_id.push(categoryId);
+                const category = (await this.categoryService.createCategory(new CreateCategoryDto(categoryName)));
+                newCommic.categories_name.push(category.name);
             } else {
-                newCommic.categories_id.push(category._id);
+                newCommic.categories_name.push(category.name);
             }
+
         }
+
         return await this.commicRepository.createObject(newCommic);
     }
 
     async findCommicById(_id: string): Promise<any> {
         const commic = await this.commicRepository.findOneObject({ _id });
-
-        return this.getCommicOption(commic, false);
+        return await this.getCommicOption(commic, false);
     }
 
     async findCommicByIdAndUpdate(_id: string, updateCommicDto: UpdateCommicDto): Promise<Commic> {
