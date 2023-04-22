@@ -2,7 +2,7 @@ import { CreateImageDto } from "../../../image/dto/create-image.dto";
 import { CreateChapterContentDto } from "./create-chapter-content.dto";
 
 export class CreateChapterDto {
-    // image_banner: CreateImageDto;
+    image_thumnail: CreateImageDto[];
     commic_id: string;
     publisher_id: string;
     chapter_content: CreateChapterContentDto[];

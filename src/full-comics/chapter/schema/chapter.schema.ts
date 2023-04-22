@@ -1,13 +1,14 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 import { CreateChapterContentDto } from "../dto/create-chapter-content.dto";
+import { CreateImageDto } from "src/image/dto/create-image.dto";
 
 export type ChapterDocument = Chapter & Document;
 
 @Schema()
 export class Chapter {
-    // @Prop()
-    // image_banner_id: string;
+    @Prop()
+    image_thumnail: CreateImageDto[];
     @Prop()
     commic_id: string;
     @Prop()

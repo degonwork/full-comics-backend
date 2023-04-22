@@ -4,7 +4,7 @@ import { CreateChapterDto } from './dto/create-chapter.dto';
 import { Chapter, ChapterDocument } from './schema/chapter.schema';
 import { Image, ImageDocument } from '../../image/schema/image.schema';
 import { PublisherAuthGuard } from 'src/auth/publishers-auth/guards/auth.guard';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CreateImageDto } from 'src/image/dto/create-image.dto';
 import { ImageService } from 'src/image/image.service';
 import { Response } from 'express';
@@ -27,10 +27,23 @@ export class ChapterController {
     // Tạo chapter mới = upload
     @UseGuards(PublisherAuthGuard)
     @Post('createFile')
-    @UseInterceptors(FilesInterceptor('images'))
-    async createChapterFile(@Body() createChapterDto: CreateChapterDto, @Req() req: any, @UploadedFiles() images: Array<Express.Multer.File>): Promise<ChapterDocument | string> {
+    @UseInterceptors(FileFieldsInterceptor(
+        [
+            { name: 'image_thumnail', maxCount: 1 },
+            { name: 'images' },
+
+        ]
+    ))
+    async createChapterFile(
+        @Body() createChapterDto: CreateChapterDto,
+        @Req() req: any,
+        // @UploadedFiles() image_thumnail: Express.Multer.File[],
+        // @UploadedFiles() images: Array<Express.Multer.File>,
+        @UploadedFiles() files: { images: Express.Multer.File[], image_thumnail: Express.Multer.File[] }
+
+    ): Promise<ChapterDocument | string> {
         const reqUser = req.user
-        return this.chapterService.createChapterFile(createChapterDto, reqUser, images);
+        return this.chapterService.createChapterFile(createChapterDto, reqUser, files.image_thumnail, files.images);
     }
 
     // Lấy chi tiết của chapter
