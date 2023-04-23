@@ -29,7 +29,7 @@ export class ChapterController {
     @UseInterceptors(FileFieldsInterceptor(
         [
             { name: 'image_thumnail', maxCount: 1 },
-            { name: 'images' },
+            { name: 'images_content' },
         ]
     ))
     async createChapterFile(
@@ -37,11 +37,11 @@ export class ChapterController {
         @Req() req: any,
         // @UploadedFiles() image_thumnail: Express.Multer.File[],
         // @UploadedFiles() images: Array<Express.Multer.File>,
-        @UploadedFiles() files: { images: Express.Multer.File[], image_thumnail: Express.Multer.File[] }
+        @UploadedFiles() files: { images_content: Express.Multer.File[], image_thumnail: Express.Multer.File[] }
 
     ): Promise<ChapterDocument | string> {
         const reqUser = req.user
-        return this.chapterService.createChapterFile(createChapterDto, reqUser, files.image_thumnail, files.images);
+        return this.chapterService.createChapterFile(createChapterDto, reqUser, files.image_thumnail, files.images_content);
     }
 
     // Lấy chi tiết của chapter

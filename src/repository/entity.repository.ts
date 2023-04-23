@@ -23,7 +23,6 @@ export abstract class EntityRepository<T extends Document> {
     }
 
     async createObject(newObject: any): Promise<T> | null {
-
         return await this.entityModel.create(newObject);
     }
 

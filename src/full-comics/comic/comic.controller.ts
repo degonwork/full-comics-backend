@@ -11,18 +11,18 @@ import { LimitComic } from './dto/limit-comic.dto';
 export class ComicController {
     constructor(private readonly comicService: ComicService) { }
 
-    @UseGuards(PublisherAuthGuard)
+    // @UseGuards(PublisherAuthGuard)
     @Post('create')
     @UseInterceptors(FileFieldsInterceptor([
-        { name: 'image', maxCount: 1 },
+        { name: 'image_detail', maxCount: 1 },
         { name: 'image_thumnail_square', maxCount: 1 },
         { name: 'image_thumnail_rectangle', maxCount: 1 },
     ]))
     async createComic(
         @Body() createComicDto: CreateComicDto,
-        @UploadedFiles() files: { image: Express.Multer.File, image_thumnail_square: Express.Multer.File, image_thumnail_rectangle: Express.Multer.File }
+        @UploadedFiles() files: { image_detail: Express.Multer.File, image_thumnail_square: Express.Multer.File, image_thumnail_rectangle: Express.Multer.File }
     ): Promise<ComicDocument> {
-        return this.comicService.createComic(createComicDto, files.image, files.image_thumnail_square, files.image_thumnail_rectangle);
+        return this.comicService.createComic(createComicDto, files.image_detail, files.image_thumnail_square, files.image_thumnail_rectangle);
     }
 
     @Get("/:id")
@@ -30,12 +30,12 @@ export class ComicController {
         return this.comicService.findComicById(id);
     }
 
-    @Get('hot-comic')
+    @Get('home/hot-comic')
     async findHotComic(@Query() query: LimitComic): Promise<Comic[]> {
         return this.comicService.findHotComic(query.limit);
     }
 
-    @Get('new-comic')
+    @Get('home/new-comic')
     async findNewComic(@Query() query: LimitComic): Promise<Comic[]> {
         return this.comicService.findNewComic(query.limit);
     }

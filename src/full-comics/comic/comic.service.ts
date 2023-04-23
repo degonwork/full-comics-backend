@@ -8,6 +8,7 @@ import { ComicRepository } from './repository/comic.repository';
 import { Comic, ComicDocument } from './schema/comic.schema';
 import { CreateComicDto } from './dto/create-comic.dto';
 import { UpdateComicDto } from './dto/update-comic.dto';
+import { type } from 'os';
 
 @Injectable()
 export class ComicService {
@@ -25,16 +26,20 @@ export class ComicService {
             image_thumnail_square_path: (await this.imageService.findImageById(comic.image_thumnail_square_id)).path,
             image_thumnail_rectangle_path: (await this.imageService.findImageById(comic.image_thumnail_rectangle_id)).path
         };
-        if (!isDetail) { return new ResponseComic(comic, comicPath); }
-        return new ResponseComic(comic, comicPath)
+        if (isDetail) { return new ResponseComic(comic, comicPath); }
+        return {
+            id: comic._id,
+            title: comic.title,
+            ...comicPath,
+        }
 
     }
 
 
-    async createComic(createComicDto: CreateComicDto, image: Express.Multer.File, image_thumnail_square: Express.Multer.File, image_thumnail_rectangle: Express.Multer.File): Promise<ComicDocument> {
+    async createComic(createComicDto: CreateComicDto, image_detail: Express.Multer.File, image_thumnail_square: Express.Multer.File, image_thumnail_rectangle: Express.Multer.File): Promise<ComicDocument> {
         // createComicDto.reads = 0;
         const newComic = Object.assign(createComicDto);
-        const imageDetail = await this.imageService.createComicImageFile(createComicDto.image_detail, image);
+        const imageDetail = await this.imageService.createComicImageFile(createComicDto.image_detail, image_detail);
         newComic.image_detail_id = imageDetail[0].id;
         const imageThumnailSquareObject = await this.imageService.createComicImageFile(createComicDto.image_thumnail_square, image_thumnail_square);
         newComic.image_thumnail_square_id = imageThumnailSquareObject[0].id;
@@ -55,7 +60,7 @@ export class ComicService {
 
     async findComicById(_id: string): Promise<any> {
         const comic = await this.comicRepository.findOneObject({ _id });
-        return await this.getComicOption(comic, false);
+        return await this.getComicOption(comic, true);
     }
 
     async findComicByIdAndUpdate(_id: string, updateComicDto: UpdateComicDto): Promise<Comic> {
@@ -73,10 +78,11 @@ export class ComicService {
 
     async findHotComic(limit?: number): Promise<any> {
         const hotComics = await this.comicRepository.findObject(limit);
+        console.log(hotComics);
         let responeHotComics = <any>[];
         hotComics.sort((a, b) => { return b.reads - a.reads; });
         for (const hotComic of hotComics) {
-            const responseHotComic = await this.getComicOption(hotComic, true);
+            const responseHotComic = await this.getComicOption(hotComic, false);
             responeHotComics.push(responseHotComic);
         }
         return responeHotComics;
@@ -89,7 +95,7 @@ export class ComicService {
             return this._toTimeStamp(b.new_update_time) - this._toTimeStamp(a.new_update_time);
         });
         for (const newComic of newComics) {
-            const responeNewComic = await this.getComicOption(newComic, true);
+            const responeNewComic = await this.getComicOption(newComic, false);
             responeNewComics.push(responeNewComic);
         }
         return responeNewComics;
