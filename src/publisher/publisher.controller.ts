@@ -4,6 +4,7 @@ import { Publisher, PublisherDocument } from './schema/publisher.schema';
 import { PublisherAuthGuard } from 'src/auth/publishers-auth/guards/auth.guard';
 import { Param } from '@nestjs/common/decorators';
 import { UpdatePublisherDto } from './dto/update-publisher.dto';
+import { CreatePublisherDto } from './dto/create-publisher.dto';
 
 @Controller('publisher')
 export class PublisherController {

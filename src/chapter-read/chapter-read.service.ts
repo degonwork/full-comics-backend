@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CommicService } from '../full-comics/commic/commic.service';
-import { UpdateCommicDto } from '../full-comics/commic/dto/update-commic.dto';
+import { ComicService } from '../full-comics/comic/comic.service';
+import { UpdateComicDto } from '../full-comics/comic/dto/update-comic.dto';
 import { CreateUUIDUserDto } from '../user/dto/create-uuid-user.dto';
 import { UserService } from '../user/user.service';
 import { CreateChapterReadDto } from './dto/create-chapter-read.dto';
@@ -12,31 +12,31 @@ export class ChapterReadService {
     constructor(
         private readonly chapterReadRepository: ChapterReadRepository,
         private readonly userService: UserService,
-        private readonly commicService: CommicService,
+        private readonly comicService: ComicService,
     ) { }
 
     async createChapterRead(uuid: string, createChapterReadDto: CreateChapterReadDto): Promise<ChapterRead | null> {
         console.log("---------------------------------------");
-        const { chapter_id, commic_id } = createChapterReadDto;
+        const { chapter_id, comic_id } = createChapterReadDto;
         const userExisted = await this.userService.findbyUUID(uuid);
         if (!userExisted) {
             console.log('user is not existing');
             const user = await this.userService.createUUIDUser(new CreateUUIDUserDto(uuid));
-            const commic = (await this.commicService.findCommicById(commic_id)).commic;
-            commic.reads += 1;
-            await this.commicService.findCommicByIdAndUpdate(commic._id, new UpdateCommicDto(commic.chapters, commic.new_update_time, commic.reads));
+            const comic = (await this.comicService.findComicById(comic_id)).comic;
+            comic.reads += 1;
+            await this.comicService.findComicByIdAndUpdate(comic._id, new UpdateComicDto(comic.chapters, comic.new_update_time, comic.reads));
             createChapterReadDto.user_id = user._id;
             createChapterReadDto.state = 'reading'
             return this.chapterReadRepository.createObject(createChapterReadDto);
         } else {
             console.log('user is existing');
             createChapterReadDto.user_id = userExisted._id;
-            const commicExisted = await this.getChapterReadByCommicIDWithUserID(userExisted._id, commic_id);
-            if (!commicExisted) {
-                console.log('commic is not existing');
-                const commic = (await this.commicService.findCommicById(commic_id)).commic;
-                commic.reads += 1;
-                await this.commicService.findCommicByIdAndUpdate(commic._id, new UpdateCommicDto(commic.chapters, commic.new_update_time, commic.reads));
+            const comicExisted = await this.getChapterReadByComicIDWithUserID(userExisted._id, comic_id);
+            if (!comicExisted) {
+                console.log('comic is not existing');
+                const comic = (await this.comicService.findComicById(comic_id)).comic;
+                comic.reads += 1;
+                await this.comicService.findComicByIdAndUpdate(comic._id, new UpdateComicDto(comic.chapters, comic.new_update_time, comic.reads));
                 createChapterReadDto.state = 'reading';
                 return this.chapterReadRepository.createObject(createChapterReadDto);
             }
@@ -54,7 +54,7 @@ export class ChapterReadService {
         return this.chapterReadRepository.findOneObject({ user_id, chapter_id });
     }
 
-    async getChapterReadByCommicIDWithUserID(user_id, commic_id: string): Promise<ChapterRead> {
-        return this.chapterReadRepository.findOneObject({ user_id, commic_id });
+    async getChapterReadByComicIDWithUserID(user_id, comic_id: string): Promise<ChapterRead> {
+        return this.chapterReadRepository.findOneObject({ user_id, comic_id });
     }
 }

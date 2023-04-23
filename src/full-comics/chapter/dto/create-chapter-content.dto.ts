@@ -4,6 +4,6 @@ export class CreateChapterContentDto {
     constructor(
         public image_id: string,
         public path: string,
-        public type: TypeImage
+        public type: TypeImage,
     ) { }
 }

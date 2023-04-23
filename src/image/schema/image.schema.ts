@@ -3,8 +3,8 @@ import { Document } from "mongoose";
 
 export type ImageDocument = Image & Document;
 
-export enum TypeImage  {
-    COMMIC = 'commic',
+export enum TypeImage {
+    COMIC = 'comic',
     CHAPTER = 'chapter',
     CONTENT = 'content',
     PUBLISHER = 'publisher,'
@@ -12,8 +12,10 @@ export enum TypeImage  {
 
 @Schema()
 export class Image {
+
     @Prop()
     path: string;
+
     @Prop()
     type: TypeImage;
 }

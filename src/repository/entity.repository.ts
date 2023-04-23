@@ -14,6 +14,13 @@ export abstract class EntityRepository<T extends Document> {
         const imageObjectId = (await this.imageService.createImage(imageObject))._id;
         return imageObjectId;
     }
+    async createImageFile(imageObject: CreateImageDto, image: Express.Multer.File): Promise<string | null> {
+
+        const imageObjectId = (await this.imageService.createImageFile(imageObject, image))._id;
+
+        return await imageObjectId;
+
+    }
 
     async createObject(newObject: any): Promise<T> | null {
         return await this.entityModel.create(newObject);
@@ -40,4 +47,8 @@ export abstract class EntityRepository<T extends Document> {
         const result = await this.entityModel.find(query).limit(limit).exec();
         return result;
     }
+    async find(entityFilterQuery: FilterQuery<T>): Promise<T[]> {
+        return this.entityModel.find(entityFilterQuery).exec();
+    }
+
 }
