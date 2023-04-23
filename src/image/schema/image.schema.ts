@@ -4,7 +4,7 @@ import { Document } from "mongoose";
 export type ImageDocument = Image & Document;
 
 export enum TypeImage {
-    COMMIC = 'commic',
+    COMIC = 'comic',
     CHAPTER = 'chapter',
     CONTENT = 'content',
     PUBLISHER = 'publisher,'

@@ -2,7 +2,6 @@ import { Body, Controller, Get, Headers, Param, Post, Req, Res, UploadedFile, Up
 import { ChapterService } from './chapter.service';
 import { CreateChapterDto } from './dto/create-chapter.dto';
 import { Chapter, ChapterDocument } from './schema/chapter.schema';
-import { Image, ImageDocument } from '../../image/schema/image.schema';
 import { PublisherAuthGuard } from 'src/auth/publishers-auth/guards/auth.guard';
 import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CreateImageDto } from 'src/image/dto/create-image.dto';
@@ -31,7 +30,6 @@ export class ChapterController {
         [
             { name: 'image_thumnail', maxCount: 1 },
             { name: 'images' },
-
         ]
     ))
     async createChapterFile(

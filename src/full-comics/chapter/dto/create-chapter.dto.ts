@@ -3,7 +3,7 @@ import { CreateChapterContentDto } from "./create-chapter-content.dto";
 
 export class CreateChapterDto {
     image_thumnail: CreateImageDto[];
-    commic_id: string;
+    comic_id: string;
     publisher_id: string;
     chapter_content: CreateChapterContentDto[];
     // image_banner: Express.Multer.File

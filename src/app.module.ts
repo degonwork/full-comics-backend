@@ -5,7 +5,7 @@ import { UserModule } from './user/user.module';
 import { ChapterModule } from './full-comics/chapter/chapter.module';
 import { PublisherModule } from './publisher/publisher.module';
 import { ImageModule } from './image/image.module';
-import { CommicModule } from './full-comics/commic/commic.module';
+import { ComicModule } from './full-comics/comic/comic.module';
 import { ChapterReadModule } from './chapter-read/chapter-read.module';
 import { CategoryModule } from './category/category.module';
 import { AuthModule } from './auth/users-auth/user.auth.module';
@@ -25,7 +25,7 @@ import { PublisherAuthModule } from './auth/publishers-auth/publisher.auth.modul
     AuthModule,
     PublisherAuthModule,
     UserModule,
-    CommicModule,
+    ComicModule,
     ChapterModule,
     PublisherModule,
     ImageModule,

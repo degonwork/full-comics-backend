@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
-import { UpdateChaptersCommic } from "src/full-comics/chapter/dto/update-chapters-commic.dto";
+import { UpdateChaptersComic } from "../../chapter/dto/update-chapters-comic.dto";
 
-export type CommicDocument = Commic & Document;
+export type ComicDocument = Comic & Document;
 
 @Schema()
-export class Commic {
+export class Comic {
     @Prop()
     image_detail_id: string;
     @Prop()
@@ -23,7 +23,7 @@ export class Commic {
     @Prop()
     year: number;
     @Prop()
-    chapters: UpdateChaptersCommic[];
+    chapters: UpdateChaptersComic[];
     @Prop()
     new_update_time: string;
     @Prop()
@@ -32,4 +32,4 @@ export class Commic {
     publisher_id: string;
 }
 
-export const CommicSchema = SchemaFactory.createForClass(Commic);
+export const ComicSchema = SchemaFactory.createForClass(Comic);

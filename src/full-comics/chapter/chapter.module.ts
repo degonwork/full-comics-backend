@@ -5,8 +5,8 @@ import { ChapterController } from './chapter.controller';
 import { ChapterService } from './chapter.service';
 import { ImageModule } from '../../image/image.module';
 import { ChapterRepository } from './repository/chapter.repository';
-import { CommicModule } from '../commic/commic.module';
-import { CommicService } from '../commic/commic.service';
+import { ComicModule } from '../comic/comic.module';
+import { ComicService } from '../comic/comic.service';
 import { ChapterReadModule } from '../../chapter-read/chapter-read.module';
 import { CategoryModule } from '../../category/category.module';
 import { MulterModule } from '@nestjs/platform-express';
@@ -30,12 +30,12 @@ import { extname } from 'path';
         }),
         MongooseModule.forFeature([{ name: Chapter.name, schema: ChapterSchema }]),
         ImageModule,
-        forwardRef(() => CommicModule),
+        forwardRef(() => ComicModule),
         ChapterReadModule,
         CategoryModule,
     ],
     controllers: [ChapterController],
-    providers: [ChapterService, ChapterRepository, CommicService],
+    providers: [ChapterService, ChapterRepository, ComicService],
     exports: [ChapterService],
 })
 export class ChapterModule { }

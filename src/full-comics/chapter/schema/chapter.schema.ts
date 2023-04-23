@@ -10,7 +10,7 @@ export class Chapter {
     @Prop()
     image_thumnail: CreateImageDto[];
     @Prop()
-    commic_id: string;
+    comic_id: string;
     @Prop()
     publisher_id: string;
     @Prop()

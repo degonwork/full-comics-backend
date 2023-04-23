@@ -1,4 +1,4 @@
-import { UpdateChaptersCommic } from "src/full-comics/chapter/dto/update-chapters-commic.dto";
+import { UpdateChaptersComic } from "../../chapter/dto/update-chapters-comic.dto";
 
 export class ResponseComic {
     _id: string;
@@ -11,7 +11,7 @@ export class ResponseComic {
     description: string;
     year: string;
     publish_date: string;
-    chapters: UpdateChaptersCommic[]
+    chapters: UpdateChaptersComic[]
     reads: number;
     publisher_id: string;
     new_update_time: string;

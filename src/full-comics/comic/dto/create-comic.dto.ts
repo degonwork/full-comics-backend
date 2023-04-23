@@ -1,7 +1,6 @@
-import { CreateCategoryDto } from "src/category/dto/create-category.dto";
 import { CreateImageDto } from "../../../image/dto/create-image.dto";
 
-export class CreateCommicDto {
+export class CreateComicDto {
     image_detail: CreateImageDto;
     image_thumnail_square: CreateImageDto;
     image_thumnail_rectangle: CreateImageDto;

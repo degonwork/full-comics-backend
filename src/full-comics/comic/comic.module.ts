@@ -1,15 +1,15 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Commic, CommicSchema } from './schema/commic.schema';
-import { CommicController } from './commic.controller';
-import { CommicService } from './commic.service';
 import { ImageModule } from '../../image/image.module';
-import { CommicRepository } from './repository/commic.repository';
 import { ChapterModule } from '../chapter/chapter.module';
 import { CategoryModule } from '../../category/category.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { Comic, ComicSchema } from './schema/comic.schema';
+import { ComicController } from './comic.controller';
+import { ComicRepository } from './repository/comic.repository';
+import { ComicService } from './comic.service';
 
 @Module({
     imports: [
@@ -26,13 +26,13 @@ import { extname } from 'path';
                 fileSize: 5 * 1024 * 1024, // Giới hạn dung lượng file 5MB
             },
         }),
-        MongooseModule.forFeature([{ name: Commic.name, schema: CommicSchema }]),
+        MongooseModule.forFeature([{ name: Comic.name, schema: ComicSchema }]),
         ImageModule,
         forwardRef(() => ChapterModule),
         CategoryModule,
     ],
-    controllers: [CommicController],
-    providers: [CommicService, CommicRepository],
-    exports: [CommicService, CommicRepository],
+    controllers: [ComicController],
+    providers: [ComicService, ComicRepository],
+    exports: [ComicService, ComicRepository],
 })
-export class CommicModule { }
+export class ComicModule { }
