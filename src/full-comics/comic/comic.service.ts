@@ -78,7 +78,6 @@ export class ComicService {
 
     async findHotComic(limit?: number): Promise<any> {
         const hotComics = await this.comicRepository.findObject(limit);
-        console.log(hotComics);
         let responeHotComics = <any>[];
         hotComics.sort((a, b) => { return b.reads - a.reads; });
         for (const hotComic of hotComics) {
