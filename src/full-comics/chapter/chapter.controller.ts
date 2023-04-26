@@ -35,8 +35,6 @@ export class ChapterController {
     async createChapterFile(
         @Body() createChapterDto: CreateChapterDto,
         @Req() req: any,
-        // @UploadedFiles() image_thumnail: Express.Multer.File[],
-        // @UploadedFiles() images: Array<Express.Multer.File>,
         @UploadedFiles() files: { images_content: Express.Multer.File[], image_thumnail: Express.Multer.File[] }
 
     ): Promise<ChapterDocument | string> {
@@ -63,11 +61,6 @@ export class ChapterController {
         return await this.chapterService.findAllChaptersByPublisherId(publisherId);
     }
 
-    @Post('upload')
-    @UseInterceptors(FileInterceptor('image'))
-    async createImage(@Body() createImageDto: CreateImageDto, @UploadedFile() image: Express.Multer.File): Promise<any> {
-        // return await this.chapterService.createImageFile(createImageDto, File);
-        return await this.imageService.createImageFile(createImageDto, image);
-    }
+
 
 }
