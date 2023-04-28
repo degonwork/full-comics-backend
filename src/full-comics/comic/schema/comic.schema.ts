@@ -30,6 +30,8 @@ export class Comic {
     reads: number;
     @Prop({ default: null })
     publisher_id: string;
+    @Prop({ default: false })
+    forge_delete: boolean
 }
 
 export const ComicSchema = SchemaFactory.createForClass(Comic);

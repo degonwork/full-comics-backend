@@ -8,7 +8,7 @@ export type ChapterDocument = Chapter & Document;
 @Schema()
 export class Chapter {
     @Prop()
-    image_thumnail: CreateImageDto[];
+    image_thumnail: CreateImageDto;
     @Prop()
     comic_id: string;
     @Prop()

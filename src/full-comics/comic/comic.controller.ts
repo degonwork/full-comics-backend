@@ -53,4 +53,6 @@ export class ComicController {
         const publisher_id = req.user.id
         return this.comicService.publisherComics(publisher_id)
     }
+
+    //Forge Delete comic
 }

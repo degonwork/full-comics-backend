@@ -6,8 +6,7 @@ export class CreateChapterDto {
     comic_id: string;
     publisher_id: string;
     chapter_content: CreateChapterContentDto[];
-    // image_banner: Express.Multer.File
-    chapter_intro: string;
+    chapter_des: string;
     publish_date: string;
     reads: number;
 

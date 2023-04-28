@@ -4,15 +4,13 @@ import { CreateChapterDto } from './dto/create-chapter.dto';
 import { Chapter, ChapterDocument } from './schema/chapter.schema';
 import { PublisherAuthGuard } from 'src/auth/publishers-auth/guards/auth.guard';
 import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { CreateImageDto } from 'src/image/dto/create-image.dto';
-import { ImageService } from 'src/image/image.service';
-import { Response } from 'express';
+import { CreateChapterContentDto } from './dto/create-chapter-content.dto';
+import { async } from 'rxjs';
 
 @Controller('chapters')
 export class ChapterController {
     constructor(
         private readonly chapterService: ChapterService,
-        private readonly imageService: ImageService
     ) { }
 
     // Tạo chapter mới = link
@@ -51,7 +49,7 @@ export class ChapterController {
 
     //Đọc chapter
     @Get('/detail-chapter/:id')
-    async detailChapters(@Param("id") id: string, @Headers("uuid") uuid: string): Promise<ChapterDocument> {
+    async detailChapter(@Param("id") id: string, @Headers("uuid") uuid: string): Promise<ChapterDocument> {
         return this.chapterService.detailChapter(id, uuid);
     }
 
@@ -61,6 +59,43 @@ export class ChapterController {
         return await this.chapterService.findAllChaptersByPublisherId(publisherId);
     }
 
+    // Update thêm ảnh vào chapter content
+    @UseGuards(PublisherAuthGuard)
+    @UseInterceptors(FilesInterceptor('images_content'))
+    @Post('/update/addImageContent/:chapterId')
+    async updateAddImageContent(@Param('chapterId') chapterId: string, @UploadedFiles() images_content: Express.Multer.File[]): Promise<ChapterDocument> {
+        return await this.chapterService.updateAddImagesContent(chapterId, images_content)
+    }
 
+    // Update sắp xếp hoặc xóa image content
+    @UseGuards(PublisherAuthGuard)
+    @Post('/update/chapterContent/:chapterId')
+    async updateChapterContent(
+        @Param('chapterId') chapterId: string,
+        @Body('chapter_content') chapterContent: CreateChapterContentDto[],
+    ): Promise<{ message: string }> {
+
+        return await this.chapterService.updateChapterContent(chapterId, chapterContent)
+    }
+
+    // Update chapter des 
+    @UseGuards(PublisherAuthGuard)
+    @Post('/update/chapterDes/:chapterId')
+    async updateChapter(
+        @Param('chapterId') chapterId: string,
+        @Body('chapter_des') chapterDes: string,
+    ): Promise<{ message: string }> {
+
+        return await this.chapterService.updateChapterDes(chapterId, chapterDes)
+    }
+
+    // Update chapter thumnail 
+    @UseGuards(PublisherAuthGuard)
+    @UseInterceptors(FileInterceptor('image_thumnail'))
+    @Post('/update/imageThumnail/:chapterId')
+    async updateChapterImageThumnail(@Param('chapterId') chapterId: string, @UploadedFile() image_thumnail: Express.Multer.File): Promise<{ message: string }> {
+        return await this.chapterService.updateChapterImageThumnail(chapterId, image_thumnail)
+
+    }
 
 }

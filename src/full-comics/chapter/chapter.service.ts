@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ChapterReadService } from '../../chapter-read/chapter-read.service';
 import { ImageService } from '../../image/image.service';
 import { CreateChapterDto } from './dto/create-chapter.dto';
@@ -6,12 +6,14 @@ import { ResponseChapter } from './dto/response-chapter.dto';
 import { UpdateChapterDto } from './dto/update-chapter.dto';
 import { ChapterRepository } from './repository/chapter.repository';
 import { Chapter, ChapterDocument } from './schema/chapter.schema';
-import { ImageDocument } from '../../image/schema/image.schema';
+import { ImageDocument, TypeImage } from '../../image/schema/image.schema';
 import { CreateChapterContentDto } from './dto/create-chapter-content.dto';
 import { CreateImageDto } from 'src/image/dto/create-image.dto';
 import { ComicService } from '../comic/comic.service';
 import { UpdateComicDto } from '../comic/dto/update-comic.dto';
 import { UpdateChaptersComic } from './dto/update-chapters-comic.dto';
+import { response } from 'express';
+import { async } from 'rxjs';
 
 @Injectable()
 export class ChapterService {
@@ -125,6 +127,57 @@ export class ChapterService {
 
     async createImageFile(createImageDto: CreateImageDto, file: Express.Multer.File): Promise<ImageDocument> {
         return await this.imageService.createImageFile(createImageDto, file)
+    }
+
+    async updateAddImagesContent(chapterId: string, images_content: Express.Multer.File[]): Promise<ChapterDocument> {
+        const chapter = await this.chapterRepository.findOneObject({ _id: chapterId });
+        if (!chapter) {
+            throw new HttpException('Chapter not found', HttpStatus.NOT_FOUND);
+        }
+        for (const image_content of images_content) {
+            const imageFileChapterContentUpdate = await this.imageService.createImageFile(
+                new CreateChapterContentDto('', '', TypeImage.CONTENT), image_content);
+            const createChapterContent = new CreateChapterContentDto(
+                imageFileChapterContentUpdate.id,
+                imageFileChapterContentUpdate.path,
+                imageFileChapterContentUpdate.type
+            );
+            chapter.chapter_content.push(createChapterContent);
+        }
+        const chapterUpdated = await chapter.save();
+        return chapterUpdated;
+    }
+
+    async updateChapterContent(chapterId: string, chapter_content: CreateChapterContentDto[]): Promise<{ message: string }> {
+        const chapter = await this.chapterRepository.findOneObject({ _id: chapterId });
+        if (!chapter) {
+            throw new HttpException('Chapter not found', HttpStatus.NOT_FOUND);
+        }
+        chapter.chapter_content = chapter_content;
+        await chapter.save();
+        return { message: 'Chapter updated successfully' };
+    }
+
+
+    async updateChapterDes(chapterId: string, chapter_des: string): Promise<{ message: string }> {
+        const chapter = await this.chapterRepository.findOneObject({ _id: chapterId });
+        if (!chapter) {
+            throw new HttpException('Chapter not found', HttpStatus.NOT_FOUND);
+        }
+        chapter.chapter_des = chapter_des;
+        await chapter.save();
+        return { message: 'Chapter des updated successfully' };
+    }
+
+    async updateChapterImageThumnail(chapterId: string, images_content: Express.Multer.File): Promise<{ message: string }> {
+        const chapter = await this.chapterRepository.findOneObject({ _id: chapterId });
+        if (!chapter) {
+            throw new HttpException('Chapter not found', HttpStatus.NOT_FOUND);
+        }
+        const imageThumnailUpdate = await this.imageService.createImageFile(new CreateChapterContentDto('', '', TypeImage.CHAPTER), images_content);
+        chapter.image_thumnail = imageThumnailUpdate;
+        await chapter.save();
+        return { message: 'Image thumnail updated successfully' };
     }
 }
 
