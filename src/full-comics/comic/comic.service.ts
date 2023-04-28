@@ -9,6 +9,8 @@ import { Comic, ComicDocument } from './schema/comic.schema';
 import { CreateComicDto } from './dto/create-comic.dto';
 import { UpdateComicDto } from './dto/update-comic.dto';
 import { type } from 'os';
+import { async } from 'rxjs';
+import { ResponsePublisherComic } from './dto/response_publisher_comics.dto';
 
 @Injectable()
 export class ComicService {
@@ -63,6 +65,20 @@ export class ComicService {
         return await this.getComicOption(comic, true);
     }
 
+    // all publisher comics
+    async findComicByPublisherId(publisher_id: string): Promise<ResponsePublisherComic[]> {
+        const publisherComics: ResponsePublisherComic[] = []
+        const comics = await this.comicRepository.findObjectesBy('publisher_id', publisher_id);
+        for (const comic of comics) {
+            const image_detail = await this.imageService.findImageById(comic.image_detail_id)
+            const image_thumnail_square = await this.imageService.findImageById(comic.image_thumnail_square_id)
+            const image_thumnail_rectangle = await this.imageService.findImageById(comic.image_thumnail_rectangle_id)
+            const responseComic = new ResponsePublisherComic(comic, image_detail.path, image_thumnail_square.path, image_thumnail_rectangle.path);
+            publisherComics.push(responseComic);
+        }
+        return publisherComics
+    }
+
     async findComicByIdAndUpdate(_id: string, updateComicDto: UpdateComicDto): Promise<Comic> {
         return this.comicRepository.findOneObjectAndUpdate({ _id }, updateComicDto);
     }
@@ -78,7 +94,6 @@ export class ComicService {
 
     async findHotComic(limit?: number): Promise<any> {
         const hotComics = await this.comicRepository.findObject(limit);
-        console.log(hotComics);
         let responeHotComics = <any>[];
         hotComics.sort((a, b) => { return b.reads - a.reads; });
         for (const hotComic of hotComics) {
@@ -105,4 +120,12 @@ export class ComicService {
         let datum = Date.parse(strDate);
         return datum / 1000;
     }
+
+    async publisherComics(publisherId: any): Promise<ResponsePublisherComic[]> {
+
+        const publisherComics = await this.findComicByPublisherId(publisherId);
+
+        return publisherComics
+    }
 }
+
