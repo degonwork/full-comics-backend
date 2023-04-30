@@ -46,11 +46,11 @@ export class ChapterService {
         //Tao publisher_id
         createChapterDto.publisher_id = reqUser.id;
         const chapter = await this.chapterRepository.createObject(createChapterDto);
-        // const image = (await this.imageService.findImageById(chapter.image_banner_id)).path;
         const updateChaptersComic = new UpdateChaptersComic(chapter.id, chapter.chapter_des, chapter.image_thumnail[0].path);
         updateComicDto.chapters = (await this.comicService.findComicById(createChapterDto.comic_id)).chapters;
         updateComicDto.chapters.push(updateChaptersComic);
-        updateComicDto.new_update_time = chapter.publish_date;
+        updateComicDto.update_time = chapter.publish_date;
+        updateComicDto.chapter_update_time = new Date().toLocaleString('en-GB', { hour12: false });
         await this.comicService.findComicByIdAndUpdate(createChapterDto.comic_id, updateComicDto);
         await this.comicService.findComicByIdAndSetComicPublisher(createChapterDto.comic_id, createChapterDto.publisher_id);
         return chapter;
@@ -144,6 +144,8 @@ export class ChapterService {
             );
             chapter.chapter_content.push(createChapterContent);
         }
+        chapter.content_update_time = new Date().toLocaleString('en-GB', { hour12: false });
+        chapter.update_time = new Date().toLocaleString('en-GB', { hour12: false });
         const chapterUpdated = await chapter.save();
         return chapterUpdated;
     }
@@ -154,6 +156,8 @@ export class ChapterService {
             throw new HttpException('Chapter not found', HttpStatus.NOT_FOUND);
         }
         chapter.chapter_content = chapter_content;
+        chapter.content_update_time = new Date().toLocaleString('en-GB', { hour12: false });
+        chapter.update_time = new Date().toLocaleString('en-GB', { hour12: false });
         await chapter.save();
         return { message: 'Chapter updated successfully' };
     }
@@ -165,6 +169,7 @@ export class ChapterService {
             throw new HttpException('Chapter not found', HttpStatus.NOT_FOUND);
         }
         chapter.chapter_des = chapter_des;
+        chapter.update_time = new Date().toLocaleString('en-GB', { hour12: false });
         await chapter.save();
         return { message: 'Chapter des updated successfully' };
     }
@@ -176,6 +181,7 @@ export class ChapterService {
         }
         const imageThumnailUpdate = await this.imageService.createImageFile(new CreateChapterContentDto('', '', TypeImage.CHAPTER), images_content);
         chapter.image_thumnail = imageThumnailUpdate;
+        chapter.update_time = new Date().toLocaleString('en-GB', { hour12: false });
         await chapter.save();
         return { message: 'Image thumnail updated successfully' };
     }

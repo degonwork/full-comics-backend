@@ -6,6 +6,8 @@ export class ResponseChapter {
     content: string[];
     chapter_des: string;
     publish_date: string;
+    content_update_time: string;
+    update_time: string
 
 
     constructor(chapter: any, imageUrls: string[]) {
@@ -16,5 +18,7 @@ export class ResponseChapter {
         this.chapter_des = chapter.chapter_des;
         this.publish_date = chapter.publish_date;
         this.content = imageUrls;
+        this.content_update_time = chapter.content_update_time
+        this.update_time = chapter.update_time
     }
 }   

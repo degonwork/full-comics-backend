@@ -52,7 +52,14 @@ export class ComicController {
     async publisherComics(@Req() req: any): Promise<ResponsePublisherComic[]> {
         const publisher_id = req.user.id
         return this.comicService.publisherComics(publisher_id)
-    }
+    }   
 
-    //Forge Delete comic
+    // Search comics
+    @Get('/search')
+    async searchComics(@Query('q') query: string): Promise<any> {
+        console.log(query);
+
+        const comics = await this.comicService.searchComics(query)
+        return { data: comics }
+    }
 }

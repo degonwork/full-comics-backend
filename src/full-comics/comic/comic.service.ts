@@ -107,7 +107,7 @@ export class ComicService {
         const newComics = await this.comicRepository.findObject(limit);
         let responeNewComics = <any>[];
         newComics.sort((a, b) => {
-            return this._toTimeStamp(b.new_update_time) - this._toTimeStamp(a.new_update_time);
+            return this._toTimeStamp(b.update_time) - this._toTimeStamp(a.update_time);
         });
         for (const newComic of newComics) {
             const responeNewComic = await this.getComicOption(newComic, false);
@@ -126,6 +126,11 @@ export class ComicService {
         const publisherComics = await this.findComicByPublisherId(publisherId);
 
         return publisherComics
+    }
+
+    async searchComics(query: string): Promise<ComicDocument[]> {
+        const regex = new RegExp(query, 'i');
+        return (await this.comicRepository.find({ title: regex }));
     }
 }
 

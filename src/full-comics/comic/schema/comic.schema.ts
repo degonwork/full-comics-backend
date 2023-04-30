@@ -24,14 +24,15 @@ export class Comic {
     year: number;
     @Prop()
     chapters: UpdateChaptersComic[];
-    @Prop()
-    new_update_time: string;
+    @Prop({ default: null })
+    update_time: string;
     @Prop()
     reads: number;
     @Prop({ default: null })
     publisher_id: string;
-    @Prop({ default: false })
-    forge_delete: boolean
+    @Prop({ default: null })
+    chapter_update_time: string;
+
 }
 
 export const ComicSchema = SchemaFactory.createForClass(Comic);

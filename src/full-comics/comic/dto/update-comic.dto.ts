@@ -4,8 +4,9 @@ export class UpdateComicDto {
     updateComicDto: UpdateChaptersComic;
     constructor(
         public chapters: UpdateChaptersComic[],
-        public new_update_time?: string,
+        public update_time?: string,
         public readonly reads?: number,
+        public chapter_update_time?: string
     ) {
     }
 }

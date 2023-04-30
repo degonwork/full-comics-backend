@@ -23,6 +23,10 @@ export class Chapter {
     reads: number;
     // @Prop({ type: [String], default: [] })
     // user_id: string[];
+    @Prop({ default: null })
+    content_update_time: string
+    @Prop({ default: null })
+    update_time: string
 }
 
 export const ChapterSchema = SchemaFactory.createForClass(Chapter);
