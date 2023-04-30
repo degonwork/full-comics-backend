@@ -49,8 +49,8 @@ export class ChapterService {
         const updateChaptersComic = new UpdateChaptersComic(chapter.id, chapter.chapter_des, chapter.image_thumnail[0].path);
         updateComicDto.chapters = (await this.comicService.findComicById(createChapterDto.comic_id)).chapters;
         updateComicDto.chapters.push(updateChaptersComic);
-        updateComicDto.update_time = chapter.publish_date;
-        updateComicDto.chapter_update_time = new Date().toLocaleString('en-GB', { hour12: false });
+        updateComicDto.chapter_update_time = chapter.publish_date;
+        updateComicDto.update_time = new Date().toLocaleString('en-GB', { hour12: false });
         await this.comicService.findComicByIdAndUpdate(createChapterDto.comic_id, updateComicDto);
         await this.comicService.findComicByIdAndSetComicPublisher(createChapterDto.comic_id, createChapterDto.publisher_id);
         return chapter;
