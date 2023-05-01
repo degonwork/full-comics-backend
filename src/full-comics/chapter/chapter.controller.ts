@@ -13,14 +13,6 @@ export class ChapterController {
         private readonly chapterService: ChapterService,
     ) { }
 
-    // Tạo chapter mới = link
-    // @UseGuards(PublisherAuthGuard)
-    // @Post('create')
-    // async createChapter(@Body() createChapterDto: CreateChapterDto, @Req() req: any): Promise<ChapterDocument | string> {
-    //     const reqUser = req.user
-    //     return this.chapterService.createChapter(createChapterDto, reqUser);
-    // }
-
     // Tạo chapter mới = upload
     @UseGuards(PublisherAuthGuard)
     @Post('createFile')

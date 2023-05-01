@@ -14,14 +14,19 @@ import { UpdateComicDto } from '../comic/dto/update-comic.dto';
 import { UpdateChaptersComic } from './dto/update-chapters-comic.dto';
 import { response } from 'express';
 import { async } from 'rxjs';
+import { ComicRepository } from '../comic/repository/comic.repository';
 
 @Injectable()
 export class ChapterService {
     constructor(
-        @Inject(forwardRef(() => ComicService)) private comicService: ComicService,
+        @Inject(forwardRef(() => ComicService))
+        private readonly comicService: ComicService,
         private readonly chapterRepository: ChapterRepository,
         private readonly chapterReadService: ChapterReadService,
         private readonly imageService: ImageService,
+        private readonly comicRepository: ComicRepository,
+
+
     ) { }
 
 
@@ -49,42 +54,12 @@ export class ChapterService {
         const updateChaptersComic = new UpdateChaptersComic(chapter.id, chapter.chapter_des, chapter.image_thumnail[0].path);
         updateComicDto.chapters = (await this.comicService.findComicById(createChapterDto.comic_id)).chapters;
         updateComicDto.chapters.push(updateChaptersComic);
-        updateComicDto.chapter_update_time = chapter.publish_date;
+        updateComicDto.add_chapter_time = chapter.publish_date;
         updateComicDto.update_time = new Date().toLocaleString('en-GB', { hour12: false });
         await this.comicService.findComicByIdAndUpdate(createChapterDto.comic_id, updateComicDto);
         await this.comicService.findComicByIdAndSetComicPublisher(createChapterDto.comic_id, createChapterDto.publisher_id);
         return chapter;
     }
-
-
-
-    // Tạo chapter = link
-    // async createChapter(createChapterDto: CreateChapterDto, reqUser: any): Promise<ChapterDocument> {
-    //     let updateComicDto = new UpdateComicDto([], '');
-    //     let listCreateChapterContent: CreateChapterContentDto[] = []
-    //     // createChapterDto.reads = updateComicDto.reads;
-    //     const newChapter = Object.assign(createChapterDto);
-
-    //     // Tạo content
-    //     for (const imageChapterContent of createChapterDto.chapter_content) {
-    //         const imageIdChapterContent = await this.chapterRepository.createImage(imageChapterContent);
-    //         const createChapterContent = new CreateChapterContentDto(imageIdChapterContent, imageChapterContent.fileName, imageChapterContent.type);
-    //         listCreateChapterContent.push(createChapterContent);
-    //     }
-    //     newChapter.chapter_content = listCreateChapterContent;
-    //     newChapter.publish_date = new Date().toLocaleString('en-GB', { hour12: false });
-    //     //Tao publisher_id
-    //     newChapter.publisher_id = reqUser.id;
-    //     const chapter = await this.chapterRepository.createObject(createChapterDto);
-    //     const updateChaptersComic = new UpdateChaptersComic(chapter._id, chapter.chapter_intro);
-    //     updateComicDto.chapters = (await this.comicService.findComicById(createChapterDto.comic_id)).comic.chapters;
-    //     updateComicDto.chapters.push(updateChaptersComic);
-    //     updateComicDto.new_update_time = chapter.publish_date;
-    //     await this.comicService.findComicByIdAndUpdate(createChapterDto.comic_id, updateComicDto);
-    //     await this.comicService.findComicByIdAndSetComicPublisher(createChapterDto.comic_id, newChapter.publisher_id);
-    //     return chapter;
-    // }
-
 
     async findChapterById(_id: string): Promise<any> {
         const chapter = await this.chapterRepository.findOneObject({ _id });
@@ -93,8 +68,6 @@ export class ChapterService {
         const imageUrls = images.map((image) => image.path);
         return { ...new ResponseChapter(chapter, imageUrls) };
     }
-
-
 
     async detailChapter(id: string, uuid: string): Promise<ChapterDocument> {
         const chapter = (await this.findChapterById(id)).chapter;
@@ -171,6 +144,16 @@ export class ChapterService {
         chapter.chapter_des = chapter_des;
         chapter.update_time = new Date().toLocaleString('en-GB', { hour12: false });
         await chapter.save();
+        const comicUpdate = await this.comicRepository.findOneObject({ _id: chapter.comic_id })
+        for (const chapters of comicUpdate.chapters) {
+            if (chapters.chapter_id === chapter.id) {
+                chapters.chapter_des = chapter.chapter_des
+                break;
+            }
+        }
+        comicUpdate.chapter_update_time = chapter.update_time
+        comicUpdate.update_time = chapter.update_time
+        await this.comicRepository.findOneObjectAndUpdate(comicUpdate.id, comicUpdate);
         return { message: 'Chapter des updated successfully' };
     }
 
@@ -183,6 +166,16 @@ export class ChapterService {
         chapter.image_thumnail = imageThumnailUpdate;
         chapter.update_time = new Date().toLocaleString('en-GB', { hour12: false });
         await chapter.save();
+        const comicUpdate = await this.comicRepository.findOneObject({ _id: chapter.comic_id })
+        for (const chapters of comicUpdate.chapters) {
+            if (chapters.chapter_id === chapter.id) {
+                chapters.image_thumnail = chapter.image_thumnail.path
+                break;
+            }
+        }
+        comicUpdate.chapter_update_time = chapter.update_time
+        comicUpdate.update_time = chapter.update_time
+        await this.comicRepository.findOneObjectAndUpdate(comicUpdate.id, comicUpdate);
         return { message: 'Image thumnail updated successfully' };
     }
 }

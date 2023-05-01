@@ -32,6 +32,9 @@ export class Comic {
     publisher_id: string;
     @Prop({ default: null })
     chapter_update_time: string;
+    @Prop({ default: null })
+    add_chapter_time: string;
+
 
 }
 

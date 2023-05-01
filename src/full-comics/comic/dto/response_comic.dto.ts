@@ -15,7 +15,8 @@ export class ResponseComic {
     reads: number;
     publisher_id: string;
     update_time: string;
-    chapter_update_time: string
+    chapter_update_time: string;
+    add_chapter_time: string
 
     constructor(comic: any, comic1: any) {
         this._id = comic._id;
@@ -31,6 +32,7 @@ export class ResponseComic {
         this.image_thumnail_rectangle = comic1.image_thumnail_rectangle_path;
         this.chapter_update_time = comic.chapter_update_time;
         this.update_time = comic.update_time;
+        this.add_chapter_time = comic.add_chapter_time
 
     }
 }

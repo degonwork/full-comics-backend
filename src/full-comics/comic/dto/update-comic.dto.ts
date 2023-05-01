@@ -6,7 +6,9 @@ export class UpdateComicDto {
         public chapters: UpdateChaptersComic[],
         public update_time?: string,
         public readonly reads?: number,
-        public chapter_update_time?: string
+        public chapter_update_time?: string,
+        public add_chapter_time?: string,
+
     ) {
     }
 }
