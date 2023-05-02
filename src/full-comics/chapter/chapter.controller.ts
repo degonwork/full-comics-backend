@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Param, Post, Req, Res, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Param, Post, Put, Req, Res, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ChapterService } from './chapter.service';
 import { CreateChapterDto } from './dto/create-chapter.dto';
 import { Chapter, ChapterDocument } from './schema/chapter.schema';
@@ -25,7 +25,7 @@ export class ChapterController {
     async createChapterFile(
         @Body() createChapterDto: CreateChapterDto,
         @Req() req: any,
-        @UploadedFiles() files: { images_content: Express.Multer.File[], image_thumnail: Express.Multer.File[] }
+        @UploadedFiles() files: { images_content: Express.Multer.File[], image_thumnail: Express.Multer.File }
 
     ): Promise<ChapterDocument | string> {
         const reqUser = req.user
@@ -54,14 +54,14 @@ export class ChapterController {
     // Update thêm ảnh vào chapter content
     @UseGuards(PublisherAuthGuard)
     @UseInterceptors(FilesInterceptor('images_content'))
-    @Post('/update/addImageContent/:chapterId')
+    @Put('/update/addImageContent/:chapterId')
     async updateAddImageContent(@Param('chapterId') chapterId: string, @UploadedFiles() images_content: Express.Multer.File[]): Promise<ChapterDocument> {
         return await this.chapterService.updateAddImagesContent(chapterId, images_content)
     }
 
     // Update sắp xếp hoặc xóa image content
     @UseGuards(PublisherAuthGuard)
-    @Post('/update/chapterContent/:chapterId')
+    @Put('/update/chapterContent/:chapterId')
     async updateChapterContent(
         @Param('chapterId') chapterId: string,
         @Body('chapter_content') chapterContent: CreateChapterContentDto[],
@@ -72,7 +72,7 @@ export class ChapterController {
 
     // Update chapter des 
     @UseGuards(PublisherAuthGuard)
-    @Post('/update/chapterDes/:chapterId')
+    @Put('/update/chapterDes/:chapterId')
     async updateChapter(
         @Param('chapterId') chapterId: string,
         @Body('chapter_des') chapterDes: string,
@@ -84,7 +84,7 @@ export class ChapterController {
     // Update chapter thumnail 
     @UseGuards(PublisherAuthGuard)
     @UseInterceptors(FileInterceptor('image_thumnail'))
-    @Post('/update/imageThumnail/:chapterId')
+    @Put('/update/imageThumnail/:chapterId')
     async updateChapterImageThumnail(@Param('chapterId') chapterId: string, @UploadedFile() image_thumnail: Express.Multer.File): Promise<{ message: string }> {
         return await this.chapterService.updateChapterImageThumnail(chapterId, image_thumnail)
 

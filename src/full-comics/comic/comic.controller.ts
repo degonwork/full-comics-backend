@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { PublisherAuthGuard } from 'src/auth/publishers-auth/guards/auth.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ResponseComic } from './dto/response_comic.dto';
@@ -8,6 +8,7 @@ import { Comic, ComicDocument } from './schema/comic.schema';
 import { LimitComic } from './dto/limit-comic.dto';
 import { async } from 'rxjs';
 import { ResponsePublisherComic } from './dto/response_publisher_comics.dto';
+import { UpdateComicDto } from './dto/update-comic.dto';
 
 @Controller('comics')
 export class ComicController {
@@ -52,14 +53,29 @@ export class ComicController {
     async publisherComics(@Req() req: any): Promise<ResponsePublisherComic[]> {
         const publisher_id = req.user.id
         return this.comicService.publisherComics(publisher_id)
-    }   
+    }
 
     // Search comics
     @Get('/search')
     async searchComics(@Query('q') query: string): Promise<any> {
-        console.log(query);
-
         const comics = await this.comicService.searchComics(query)
         return { data: comics }
+    }
+
+    // Update comic's 
+
+    @Put('/update/:id')
+    @UseInterceptors(FileFieldsInterceptor([
+        { name: 'image_detail', maxCount: 1 },
+        { name: 'image_thumnail_square', maxCount: 1 },
+        { name: 'image_thumnail_rectangle', maxCount: 1 },
+    ]))
+    async updateComic(
+        @Param('id') id: string,
+        @Body() comicUpdate: UpdateComicDto,
+        @UploadedFiles() files: { image_detail: Express.Multer.File, image_thumnail_square: Express.Multer.File, image_thumnail_rectangle: Express.Multer.File }
+    ): Promise<ComicDocument> {
+        const comicUpdated = await this.comicService.updateComic(id, comicUpdate, files.image_detail, files.image_thumnail_square, files.image_thumnail_rectangle)
+        return comicUpdated
     }
 }

@@ -13,7 +13,7 @@ export class ResponseChapter {
     constructor(chapter: any, imageUrls: string[]) {
         this._id = chapter._id;
         this.comic_id = chapter.comic_id;
-        this.image_thumnail = chapter.image_thumnail[0].path;
+        this.image_thumnail = chapter.image_thumnail.path;
         // this.publisher_id = chapter.publisher_id;
         this.chapter_des = chapter.chapter_des;
         this.publish_date = chapter.publish_date;
