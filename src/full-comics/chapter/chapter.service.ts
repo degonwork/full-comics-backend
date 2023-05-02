@@ -132,6 +132,8 @@ export class ChapterService {
         }
         chapter.chapter_content = chapter_content;
         chapter.content_update_time = new Date().toLocaleString('en-GB', { hour12: false });
+        console.log(chapter.content_update_time);
+        
         chapter.update_time = new Date().toLocaleString('en-GB', { hour12: false });
         await chapter.save();
         return { message: 'Chapter updated successfully' };

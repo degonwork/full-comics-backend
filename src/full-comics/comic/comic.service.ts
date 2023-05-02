@@ -3,14 +3,14 @@ import { ImageService } from '../../image/image.service';
 import { ChapterService } from '../chapter/chapter.service';
 import { CategoryService } from '../../category/category.service';
 import { CreateCategoryDto } from '../../category/dto/create-category.dto';
-import { ResponseComic } from './dto/response_comic.dto';
+import { ResponseComic } from './dto/response-comic.dto';
 import { ComicRepository } from './repository/comic.repository';
 import { Comic, ComicDocument } from './schema/comic.schema';
 import { CreateComicDto } from './dto/create-comic.dto';
 import { UpdateComicDto } from './dto/update-comic.dto';
 import { type } from 'os';
 import { async } from 'rxjs';
-import { ResponsePublisherComic } from './dto/response_publisher_comics.dto';
+import { ResponsePublisherComic } from './dto/response-publisher-comics.dto';
 import { CreateImageDto } from 'src/image/dto/create-image.dto';
 import { TypeImage } from 'src/image/schema/image.schema';
 
@@ -30,11 +30,18 @@ export class ComicService {
             image_thumnail_square_path: (await this.imageService.findImageById(comic.image_thumnail_square_id)).path,
             image_thumnail_rectangle_path: (await this.imageService.findImageById(comic.image_thumnail_rectangle_id)).path
         };
-        if (isDetail) { return new ResponseComic(comic, comicPath); }
+        if (isDetail) {
+            const ComicResponse = new ResponseComic(comic, comicPath);
+
+            return ComicResponse
+        }
+        const addChapterTimestamp = new Date(comic.add_chapter_time).getTime();
         return {
             id: comic._id,
             title: comic.title,
             ...comicPath,
+            reads: comic.reads,
+            add_chapter_time: addChapterTimestamp
         }
 
     }
@@ -116,7 +123,7 @@ export class ComicService {
         const newComics = await this.comicRepository.findObject(limit);
         let responeNewComics = <any>[];
         newComics.sort((a, b) => {
-            return this._toTimeStamp(b.update_time) - this._toTimeStamp(a.update_time);
+            return this._toTimeStamp(b.add_chapter_time) - this._toTimeStamp(a.add_chapter_time);
         });
         for (const newComic of newComics) {
             const responeNewComic = await this.getComicOption(newComic, false);
@@ -127,7 +134,7 @@ export class ComicService {
 
     _toTimeStamp(strDate: string): number {
         let datum = Date.parse(strDate);
-        return datum / 1000;
+        return datum;
     }
 
     async publisherComics(publisherId: any): Promise<ResponsePublisherComic[]> {
