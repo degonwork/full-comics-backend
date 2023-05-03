@@ -12,7 +12,7 @@ export class ImageService {
         return this.imageRepository.createObject(createImageDto);
     }
 
-    async createImageFile(createImageDto: CreateImageDto, image: Express.Multer.File): Promise<ImageDocument> {
+    async createImageFile(createImageDto: CreateImageDto, image: Express.Multer.File): Promise<ImageDocument> {        
         createImageDto.path = `${process.env.BASEURLIMAGE}${image.filename}`
         const result = await this.imageRepository.createObject(createImageDto)
         return result;
@@ -20,10 +20,11 @@ export class ImageService {
     }
 
     async createComicImageFile(createImageDto: CreateImageDto, image: Express.Multer.File): Promise<ImageDocument> {
-        createImageDto[0].path = `${process.env.BASEURLIMAGE}${image[0].filename}`
+        createImageDto.path = `${process.env.BASEURLIMAGE}${image[0].filename}`
         const result = await this.imageRepository.createObject(createImageDto)
         return result;
     }
+    
     async findImagesById(id: string): Promise<Image[]> {
         return this.imageRepository.findById(id);
     }

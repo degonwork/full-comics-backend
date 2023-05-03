@@ -3,14 +3,16 @@ import { ImageService } from '../../image/image.service';
 import { ChapterService } from '../chapter/chapter.service';
 import { CategoryService } from '../../category/category.service';
 import { CreateCategoryDto } from '../../category/dto/create-category.dto';
-import { ResponseComic } from './dto/response_comic.dto';
+import { ResponseComic } from './dto/response-comic.dto';
 import { ComicRepository } from './repository/comic.repository';
 import { Comic, ComicDocument } from './schema/comic.schema';
 import { CreateComicDto } from './dto/create-comic.dto';
 import { UpdateComicDto } from './dto/update-comic.dto';
 import { type } from 'os';
 import { async } from 'rxjs';
-import { ResponsePublisherComic } from './dto/response_publisher_comics.dto';
+import { ResponsePublisherComic } from './dto/response-publisher-comics.dto';
+import { CreateImageDto } from 'src/image/dto/create-image.dto';
+import { TypeImage } from 'src/image/schema/image.schema';
 
 @Injectable()
 export class ComicService {
@@ -28,11 +30,18 @@ export class ComicService {
             image_thumnail_square_path: (await this.imageService.findImageById(comic.image_thumnail_square_id)).path,
             image_thumnail_rectangle_path: (await this.imageService.findImageById(comic.image_thumnail_rectangle_id)).path
         };
-        if (isDetail) { return new ResponseComic(comic, comicPath); }
+        if (isDetail) {
+            const ComicResponse = new ResponseComic(comic, comicPath);
+
+            return ComicResponse
+        }
+        const addChapterTimestamp = new Date(comic.add_chapter_time).getTime();
         return {
             id: comic._id,
             title: comic.title,
             ...comicPath,
+            reads: comic.reads,
+            add_chapter_time: addChapterTimestamp
         }
 
     }
@@ -41,12 +50,19 @@ export class ComicService {
     async createComic(createComicDto: CreateComicDto, image_detail: Express.Multer.File, image_thumnail_square: Express.Multer.File, image_thumnail_rectangle: Express.Multer.File): Promise<ComicDocument> {
         // createComicDto.reads = 0;
         const newComic = Object.assign(createComicDto);
-        const imageDetail = await this.imageService.createComicImageFile(createComicDto.image_detail, image_detail);
-        newComic.image_detail_id = imageDetail[0].id;
-        const imageThumnailSquareObject = await this.imageService.createComicImageFile(createComicDto.image_thumnail_square, image_thumnail_square);
-        newComic.image_thumnail_square_id = imageThumnailSquareObject[0].id;
-        const imageThumnailRectangleObject = await this.imageService.createComicImageFile(createComicDto.image_thumnail_rectangle, image_thumnail_rectangle);
-        newComic.image_thumnail_rectangle_id = imageThumnailRectangleObject[0].id;
+        const imageNew = new CreateImageDto
+        imageNew.type = TypeImage.COMIC
+        if (image_detail) {
+            const imageDetail = await this.imageService.createComicImageFile(imageNew, image_detail);
+            newComic.image_detail_id = imageDetail.id;
+        }
+        if (image_thumnail_square) {
+            const imageThumnailSquareObject = await this.imageService.createComicImageFile(imageNew, image_thumnail_square);
+            newComic.image_thumnail_square_id = imageThumnailSquareObject.id;
+        } if (image_thumnail_rectangle) {
+            const imageThumnailRectangleObject = await this.imageService.createComicImageFile(imageNew, image_thumnail_rectangle);
+            newComic.image_thumnail_rectangle_id = imageThumnailRectangleObject.id;
+        }
         newComic.categories_name = [];
         for (const categoryName of createComicDto.categories) {
             const category = await this.categoryService.findCategory(categoryName);
@@ -107,7 +123,7 @@ export class ComicService {
         const newComics = await this.comicRepository.findObject(limit);
         let responeNewComics = <any>[];
         newComics.sort((a, b) => {
-            return this._toTimeStamp(b.new_update_time) - this._toTimeStamp(a.new_update_time);
+            return this._toTimeStamp(b.add_chapter_time) - this._toTimeStamp(a.add_chapter_time);
         });
         for (const newComic of newComics) {
             const responeNewComic = await this.getComicOption(newComic, false);
@@ -118,7 +134,7 @@ export class ComicService {
 
     _toTimeStamp(strDate: string): number {
         let datum = Date.parse(strDate);
-        return datum / 1000;
+        return datum;
     }
 
     async publisherComics(publisherId: any): Promise<ResponsePublisherComic[]> {
@@ -127,5 +143,53 @@ export class ComicService {
 
         return publisherComics
     }
+
+    async searchComics(query: string): Promise<ComicDocument[]> {
+        const regex = new RegExp(query, 'i');
+        return (await this.comicRepository.find({ title: regex }));
+    }
+
+    async updateComic(comicId: string, comicUpdate: UpdateComicDto, image_detail: Express.Multer.File, image_thumnail_square: Express.Multer.File, image_thumnail_rectangle: Express.Multer.File): Promise<ComicDocument> {
+        const comic = await this.comicRepository.findOneObject({ _id: comicId })
+        if (comicUpdate.title) {
+            comic.title = comicUpdate.title
+        }
+        if (comicUpdate.description) {
+            comic.description = comicUpdate.description
+        }
+        if (comicUpdate.categories) {
+            const categoriesUpdate = []
+            for (const categoryName of comicUpdate.categories) {
+                const category = await this.categoryService.findCategory(categoryName);
+                if (!category) {
+                    const category = (await this.categoryService.createCategory(new CreateCategoryDto(categoryName)));
+                    categoriesUpdate.push(category.name);
+                } else {
+                    categoriesUpdate.push(category.name);
+                }
+            }
+            comic.categories = categoriesUpdate
+
+        }
+        const imageDetailNew = new CreateImageDto
+        imageDetailNew.type = TypeImage.COMIC
+        if (image_detail) {
+            const imageDetail = await this.imageService.createComicImageFile(imageDetailNew, image_detail);
+            comic.image_detail_id = imageDetail.id;
+        }
+        if (image_thumnail_square) {
+            const imageThumnailSquare = await this.imageService.createComicImageFile(imageDetailNew, image_detail);
+            comic.image_thumnail_square_id = imageThumnailSquare.id;
+        }
+        if (image_thumnail_rectangle) {
+            const imageThumnailRectangle = await this.imageService.createComicImageFile(imageDetailNew, image_detail);
+            comic.image_thumnail_rectangle_id = imageThumnailRectangle.id;
+        }
+
+        comic.update_time = new Date().toLocaleString('en-GB', { hour12: false })
+        const comicUpdated = await comic.save()
+        return comicUpdated
+    }
+
 }
 

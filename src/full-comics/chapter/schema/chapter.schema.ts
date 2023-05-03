@@ -8,7 +8,7 @@ export type ChapterDocument = Chapter & Document;
 @Schema()
 export class Chapter {
     @Prop()
-    image_thumnail: CreateImageDto[];
+    image_thumnail: CreateImageDto;
     @Prop()
     comic_id: string;
     @Prop()
@@ -23,6 +23,10 @@ export class Chapter {
     reads: number;
     // @Prop({ type: [String], default: [] })
     // user_id: string[];
+    @Prop({ default: null })
+    content_update_time: string
+    @Prop({ default: null })
+    update_time: string
 }
 
 export const ChapterSchema = SchemaFactory.createForClass(Chapter);

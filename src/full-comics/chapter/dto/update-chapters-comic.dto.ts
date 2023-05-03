@@ -1,7 +1,7 @@
 export class UpdateChaptersComic {
     constructor(
-        private readonly chapter_id: string,
-        private readonly chapter_des: string,
-        private readonly image_thumnail: string
+        public readonly chapter_id?: string,
+        public chapter_des?: string,
+        public image_thumnail?: string
     ) { }
 }
