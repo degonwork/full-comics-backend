@@ -32,8 +32,6 @@ export class ComicController {
     // Search comics
     @Get('/search')
     async searchComics(@Query('q') query: any): Promise<any> {
-        console.log(query);
-
         const comics = await this.comicService.searchComics(query)
         return { data: comics }
     }

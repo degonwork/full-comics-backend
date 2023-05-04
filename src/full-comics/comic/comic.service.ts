@@ -145,9 +145,20 @@ export class ComicService {
     }
 
     async searchComics(query: string): Promise<ComicDocument[]> {
-        const regex = new RegExp(query, 'i');
-        return (await this.comicRepository.find({ title: regex }));
+        const queryWithoutVietnameseMarks = query.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const rawRegex = new RegExp(query, 'i');
+        const regex = new RegExp(queryWithoutVietnameseMarks, 'i');
+        return await this.comicRepository.find({
+            $or: [
+                { title: rawRegex },
+                { categories: { $elemMatch: { $regex: rawRegex } } },
+                { title: regex },
+                { categories: { $elemMatch: { $regex: regex } } },
+            ],
+        });
     }
+
+
 
     async updateComic(comicId: string, comicUpdate: UpdateComicDto, image_detail: Express.Multer.File, image_thumnail_square: Express.Multer.File, image_thumnail_rectangle: Express.Multer.File): Promise<ComicDocument> {
         const comic = await this.comicRepository.findOneObject({ _id: comicId })
