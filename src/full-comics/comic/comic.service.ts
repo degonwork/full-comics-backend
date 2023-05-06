@@ -109,10 +109,11 @@ export class ComicService {
     }
 
     async findHotComic(limit?: number): Promise<any> {
-        const hotComics = await this.comicRepository.findObject(limit);
+        const hotComics = await this.comicRepository.findObjectNoLimit();
         let responeHotComics = <any>[];
         hotComics.sort((a, b) => { return b.reads - a.reads; });
-        for (const hotComic of hotComics) {
+        const limitedComics = limit ? hotComics.slice(0, limit) : hotComics;
+        for (const hotComic of limitedComics) {
             const responseHotComic = await this.getComicOption(hotComic, false);
             responeHotComics.push(responseHotComic);
         }
@@ -120,12 +121,14 @@ export class ComicService {
     }
 
     async findNewComic(limit?: number): Promise<any> {
-        const newComics = await this.comicRepository.findObject(limit);
+        const newComics = await this.comicRepository.findObjectNoLimit();
         let responeNewComics = <any>[];
-        newComics.sort((a, b) => {
+        const filterNewComics = newComics.filter(newComics => newComics.add_chapter_time !== null)
+        filterNewComics.sort((a, b) => {
             return this._toTimeStamp(b.add_chapter_time) - this._toTimeStamp(a.add_chapter_time);
         });
-        for (const newComic of newComics) {
+        const limitedComics = limit ? filterNewComics.slice(0, limit) : filterNewComics;
+        for (const newComic of limitedComics) {
             const responeNewComic = await this.getComicOption(newComic, false);
             responeNewComics.push(responeNewComic);
         }
