@@ -36,12 +36,14 @@ export class ComicService {
             return ComicResponse
         }
         const addChapterTimestamp = new Date(comic.add_chapter_time).getTime();
+        const updateTimestamp = new Date(comic.update_time).getTime();
         return {
             id: comic._id,
             title: comic.title,
             ...comicPath,
             reads: comic.reads,
-            add_chapter_time: addChapterTimestamp
+            add_chapter_time: addChapterTimestamp,
+            update_time: updateTimestamp
         }
 
     }
