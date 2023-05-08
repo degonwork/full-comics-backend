@@ -2,9 +2,9 @@ import { UpdateChaptersComic } from "../../chapter/dto/update-chapters-comic.dto
 
 export class ResponseComic {
     _id: string;
-    image_detail: string;
-    image_thumnail_square: string;
-    image_thumnail_rectangle: string;
+    image_detail_path: string;
+    image_thumnail_square_path: string;
+    image_thumnail_rectangle_path: string;
     title: string;
     categories: string[];
     author: string;
@@ -27,9 +27,9 @@ export class ResponseComic {
         this.year = comic.year;
         this.chapters = comic.chapters;
         this.reads = comic.reads;
-        this.image_detail = comic1.image_detail_path;
-        this.image_thumnail_square = comic1.image_thumnail_square_path;
-        this.image_thumnail_rectangle = comic1.image_thumnail_rectangle_path;
+        this.image_detail_path = comic1.image_detail_path;
+        this.image_thumnail_square_path = comic1.image_thumnail_square_path;
+        this.image_thumnail_rectangle_path = comic1.image_thumnail_rectangle_path;
         const chapterUpdateTimestamp = new Date(comic.chapter_update_time).getTime();
         this.chapter_update_time = chapterUpdateTimestamp;
         const updateTimestamp = new Date(comic.update_time).getTime();
