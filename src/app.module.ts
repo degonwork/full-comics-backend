@@ -11,15 +11,15 @@ import { CategoryModule } from './category/category.module';
 import { AuthModule } from './auth/users-auth/user.auth.module';
 import { PublisherAuthModule } from './auth/publishers-auth/publisher.auth.module';
 
-
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: [".env"] }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env'] }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({ uri: configService.get("MONGO_URI") }),
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get('MONGO_URI'),
+      }),
       inject: [ConfigService],
-
     }),
     ChapterReadModule,
     AuthModule,
@@ -30,9 +30,8 @@ import { PublisherAuthModule } from './auth/publishers-auth/publisher.auth.modul
     PublisherModule,
     ImageModule,
     CategoryModule,
-
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}
