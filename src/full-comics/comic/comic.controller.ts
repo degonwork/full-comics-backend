@@ -25,7 +25,7 @@ import { UpdateComicDto } from './dto/update-comic.dto';
 
 @Controller('comics')
 export class ComicController {
-  constructor(private readonly comicService: ComicService) {}
+  constructor(private readonly comicService: ComicService) { }
 
   // Tạo comic
   @UseGuards(PublisherAuthGuard)
@@ -39,6 +39,7 @@ export class ComicController {
   )
   async createComic(
     @Body() createComicDto: CreateComicDto,
+    @Body('categories', ParseArrayPipe) categories: string[],
     @UploadedFiles()
     files: {
       image_detail: Express.Multer.File;
@@ -47,7 +48,7 @@ export class ComicController {
     },
   ): Promise<ComicDocument> {
     return this.comicService.createComic(
-      createComicDto,
+      { ...createComicDto, categories },
       files.image_detail,
       files.image_thumnail_square,
       files.image_thumnail_rectangle,

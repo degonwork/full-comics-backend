@@ -32,7 +32,7 @@ export class ChapterService {
 
     // Tạo chapter = upload file
     async createChapterFile(createChapterDto: CreateChapterDto, reqUser: any, imageThumnail: Express.Multer.File, imageContents: Express.Multer.File[]): Promise<ChapterDocument> {
-        let updateComicDto = new UpdateComicDto([], '');
+        let updateComicDto = new UpdateComicDto([]);
         let listCreateChapterContent: CreateChapterContentDto[] = []
         // Tạo thumnail
         if (imageThumnail) {
@@ -58,6 +58,7 @@ export class ChapterService {
         updateComicDto.chapters.push(updateChaptersComic);
         updateComicDto.add_chapter_time = chapter.publish_date;
         updateComicDto.update_time = new Date().toLocaleString('en-GB', { hour12: false });
+        // const { title, categories, description, reads, ...update } = updateComicDto;
         await this.comicService.findComicByIdAndUpdate(createChapterDto.comic_id, updateComicDto);
         await this.comicService.findComicByIdAndSetComicPublisher(createChapterDto.comic_id, createChapterDto.publisher_id);
         return chapter;
@@ -133,7 +134,7 @@ export class ChapterService {
         chapter.chapter_content = chapter_content;
         chapter.content_update_time = new Date().toLocaleString('en-GB', { hour12: false });
         console.log(chapter.content_update_time);
-        
+
         chapter.update_time = new Date().toLocaleString('en-GB', { hour12: false });
         await chapter.save();
         return { message: 'Chapter updated successfully' };
