@@ -22,7 +22,7 @@ export class ComicService {
     private readonly comicRepository: ComicRepository,
     private readonly imageService: ImageService,
     private readonly categoryService: CategoryService,
-  ) {}
+  ) { }
 
   async getComicOption(comic: ComicDocument, isDetail: boolean): Promise<any> {
     const comicPath = {
@@ -52,6 +52,7 @@ export class ComicService {
       update_time: updateTimestamp,
     };
   }
+
 
   async createComic(
     createComicDto: CreateComicDto,
@@ -152,6 +153,28 @@ export class ComicService {
       return await this.comicRepository.findOneObjectAndUpdate({ _id }, comic);
     }
     return comic;
+  }
+
+  async findAllComics(limit?: number): Promise<any> {
+    const newComics = await this.comicRepository.findObjectNoLimit();
+    let responeNewComics = <any>[];
+    const filterNewComics = newComics.filter(
+      (newComics) => newComics.add_chapter_time !== null,
+    );
+    filterNewComics.sort((a, b) => {
+      return (
+        this._toTimeStamp(b.add_chapter_time) -
+        this._toTimeStamp(a.add_chapter_time)
+      );
+    });
+    const limitedComics = limit
+      ? filterNewComics.slice(0, limit)
+      : filterNewComics;
+    for (const newComic of limitedComics) {
+      const responeNewComic = await this.getComicOption(newComic, true);
+      responeNewComics.push(responeNewComic);
+    }
+    return responeNewComics;
   }
 
   async findHotComic(limit?: number): Promise<any> {
