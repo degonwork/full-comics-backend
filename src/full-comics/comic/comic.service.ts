@@ -11,7 +11,7 @@ import { UpdateComicDto } from './dto/update-comic.dto';
 import { ResponsePublisherComic } from './dto/response-publisher-comics.dto';
 import { CreateImageDto } from 'src/image/dto/create-image.dto';
 import { TypeImage } from 'src/image/schema/image.schema';
-
+import * as moment from 'moment'
 @Injectable()
 export class ComicService {
   constructor(
@@ -39,8 +39,8 @@ export class ComicService {
 
       return ComicResponse;
     }
-    const addChapterTimestamp = comic.add_chapter_time != null ? new Date(comic.add_chapter_time).getTime() : null;
-    const updateTimestamp = comic.update_time != null ? new Date(comic.update_time).getTime() : null;
+    const addChapterTimestamp = this._toTimeStamp(comic.add_chapter_time)
+    const updateTimestamp = this._toTimeStamp(comic.update_time)
     return {
       id: comic._id,
       title: comic.title,
@@ -212,8 +212,8 @@ export class ComicService {
   }
 
   _toTimeStamp(strDate: string): number {
-    let datum = Date.parse(strDate);
-    return datum;
+    const timestamp = moment(strDate, 'DD/MM/YYYY, hh:mm:ss').valueOf();
+    return timestamp;
   }
 
   async publisherComics(publisherId: any): Promise<ResponsePublisherComic[]> {

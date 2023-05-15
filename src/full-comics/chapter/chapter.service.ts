@@ -70,7 +70,7 @@ export class ChapterService {
         const images = await Promise.all(imageIds.map((id) => this.imageService.findImageById(id)));
         const imageUrls = images.map((image) => image.path);
         console.log(chapter);
-        
+
         return { ...new ResponseChapter(chapter, imageUrls) };
     }
 
@@ -135,8 +135,6 @@ export class ChapterService {
         }
         chapter.chapter_content = chapter_content;
         chapter.content_update_time = new Date().toLocaleString('en-GB', { hour12: false });
-        console.log(chapter.content_update_time);
-
         chapter.update_time = new Date().toLocaleString('en-GB', { hour12: false });
         await chapter.save();
         return { message: 'Chapter updated successfully' };

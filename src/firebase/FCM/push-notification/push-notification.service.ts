@@ -20,8 +20,6 @@ export class PushNotificationService {
     async send(pushNotificationDto: PushNotificationDto) {
         let { title, body, token } = pushNotificationDto
         const comic = await this.comicService.findComicById(title)
-        console.log(comic);
-
         const comicName = comic.title
         const payload = {
             notification: {

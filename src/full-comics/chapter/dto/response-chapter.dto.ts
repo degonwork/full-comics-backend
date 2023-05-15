@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 export class ResponseChapter {
   _id: string;
   comic_id: string;
@@ -17,11 +19,8 @@ export class ResponseChapter {
     this.chapter_des = chapter.chapter_des;
     this.publish_date = chapter.publish_date;
     this.content = imageUrls;
-    const ContentUpdateTimestamp = chapter.content_update_time != null ? new Date(
-      chapter.content_update_time,
-    ).getTime() : null;
-    this.content_update_time = ContentUpdateTimestamp;
-    const updateTimestamp = chapter.update_time != null ? new Date(chapter.update_time).getTime() : null;
-    this.update_time = updateTimestamp;
+    this.content_update_time = moment(chapter.content_update_time, 'DD/MM/YYYY, hh:mm:ss').valueOf();
+    this.update_time = moment(chapter.update_time, 'DD/MM/YYYY, hh:mm:ss').valueOf();
+
   }
 }

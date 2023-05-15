@@ -82,6 +82,7 @@ export class PublisherAuthService {
         payload.publisher.publisherName,
       );
       const newAccessToken = await this._createToken(publisher, true);
+      console.log(newAccessToken);
       return newAccessToken;
     } catch (e) {
       return 'Invalid token';
