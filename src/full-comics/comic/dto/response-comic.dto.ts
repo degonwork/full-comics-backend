@@ -11,7 +11,6 @@ export class ResponseComic {
     author: string;
     description: string;
     year: string;
-    publish_date: string;
     chapters: UpdateChaptersComic[];
     reads: number;
     publisher_id: string;

@@ -69,8 +69,6 @@ export class ChapterService {
         const imageIds = chapter.chapter_content.map((content) => content.image_id);
         const images = await Promise.all(imageIds.map((id) => this.imageService.findImageById(id)));
         const imageUrls = images.map((image) => image.path);
-        console.log(chapter);
-
         return { ...new ResponseChapter(chapter, imageUrls) };
     }
 

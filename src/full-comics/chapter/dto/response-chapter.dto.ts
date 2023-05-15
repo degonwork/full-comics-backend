@@ -7,7 +7,7 @@ export class ResponseChapter {
   // publisher_id: string;
   content: string[];
   chapter_des: string;
-  publish_date: string;
+  publish_date: number;
   content_update_time: number;
   update_time: number;
 
@@ -17,7 +17,7 @@ export class ResponseChapter {
     this.image_thumnail_path = chapter.image_thumnail.path;
     // this.publisher_id = chapter.publisher_id;
     this.chapter_des = chapter.chapter_des;
-    this.publish_date = chapter.publish_date;
+    this.publish_date = moment(chapter.publish_date, 'DD/MM/YYYY, hh:mm:ss').valueOf();
     this.content = imageUrls;
     this.content_update_time = moment(chapter.content_update_time, 'DD/MM/YYYY, hh:mm:ss').valueOf();
     this.update_time = moment(chapter.update_time, 'DD/MM/YYYY, hh:mm:ss').valueOf();
