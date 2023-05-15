@@ -17,11 +17,11 @@ export class ResponseChapter {
     this.chapter_des = chapter.chapter_des;
     this.publish_date = chapter.publish_date;
     this.content = imageUrls;
-    const ContentUpdateTimestamp = new Date(
+    const ContentUpdateTimestamp = chapter.content_update_time != null ? new Date(
       chapter.content_update_time,
-    ).getTime();
+    ).getTime() : null;
     this.content_update_time = ContentUpdateTimestamp;
-    const updateTimestamp = new Date(chapter.update_time).getTime();
+    const updateTimestamp = chapter.update_time != null ? new Date(chapter.update_time).getTime() : null;
     this.update_time = updateTimestamp;
   }
 }

@@ -69,24 +69,26 @@ export class ChapterService {
         const imageIds = chapter.chapter_content.map((content) => content.image_id);
         const images = await Promise.all(imageIds.map((id) => this.imageService.findImageById(id)));
         const imageUrls = images.map((image) => image.path);
+        console.log(chapter);
+        
         return { ...new ResponseChapter(chapter, imageUrls) };
     }
 
-    async detailChapter(id: string, uuid: string): Promise<ChapterDocument> {
-        const chapter = (await this.findChapterById(id)).chapter;
-        const chapterRead = await this.chapterReadService.createChapterRead(uuid, {
-            chapter_id: id,
-            comic_id: chapter.comic_id,
-        });
-        if (chapterRead) {
-            chapter.reads += 1;
-            await this.findChapterByIdAndUpdate(id, new UpdateChapterDto(chapter.reads));
-            console.log('create successfull');
-        } else {
-            console.log('Dont create');
-        }
-        return chapter;
-    }
+    // async detailChapter(id: string, uuid: string): Promise<ChapterDocument> {
+    //     const chapter = (await this.findChapterById(id)).chapter;
+    //     const chapterRead = await this.chapterReadService.createChapterRead(uuid, {
+    //         chapter_id: id,
+    //         comic_id: chapter.comic_id,
+    //     });
+    //     if (chapterRead) {
+    //         chapter.reads += 1;
+    //         await this.findChapterByIdAndUpdate(id, new UpdateChapterDto(chapter.reads));
+    //         console.log('create successfull');
+    //     } else {
+    //         console.log('Dont create');
+    //     }
+    //     return chapter;
+    // }
 
     async findChapter(): Promise<Chapter[]> {
         return this.chapterRepository.findObject();

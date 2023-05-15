@@ -30,11 +30,11 @@ export class ResponseComic {
         this.image_detail_path = comic1.image_detail_path;
         this.image_thumnail_square_path = comic1.image_thumnail_square_path;
         this.image_thumnail_rectangle_path = comic1.image_thumnail_rectangle_path;
-        const chapterUpdateTimestamp = new Date(comic.chapter_update_time).getTime();
+        const chapterUpdateTimestamp = comic.chapter_update_time != null ? new Date(comic.chapter_update_time).getTime() : null;
         this.chapter_update_time = chapterUpdateTimestamp;
-        const updateTimestamp = new Date(comic.update_time).getTime();
+        const updateTimestamp = comic.update_time != null ? new Date(comic.update_time).getTime() : null;
         this.update_time = updateTimestamp
-        const addChapterTimestamp = new Date(comic.add_chapter_time).getTime();
+        const addChapterTimestamp = comic.add_chapter_time != null ? new Date(comic.add_chapter_time).getTime() : null;
         this.add_chapter_time = addChapterTimestamp
     }
 }

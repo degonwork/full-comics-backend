@@ -40,10 +40,10 @@ export class ChapterController {
 
 
     //Đọc chapter
-    @Get('/detail-chapter/:id')
-    async detailChapter(@Param("id") id: string, @Headers("uuid") uuid: string): Promise<ChapterDocument> {
-        return this.chapterService.detailChapter(id, uuid);
-    }
+    // @Get('/detail-chapter/:id')
+    // async detailChapter(@Param("id") id: string, @Headers("uuid") uuid: string): Promise<ChapterDocument> {
+    //     return this.chapterService.detailChapter(id, uuid);
+    // }
 
     @UseGuards(PublisherAuthGuard)
     @Get('/publisher/:publisherId')

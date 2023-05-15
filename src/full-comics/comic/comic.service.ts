@@ -8,8 +8,6 @@ import { ComicRepository } from './repository/comic.repository';
 import { Comic, ComicDocument } from './schema/comic.schema';
 import { CreateComicDto } from './dto/create-comic.dto';
 import { UpdateComicDto } from './dto/update-comic.dto';
-import { type } from 'os';
-import { async } from 'rxjs';
 import { ResponsePublisherComic } from './dto/response-publisher-comics.dto';
 import { CreateImageDto } from 'src/image/dto/create-image.dto';
 import { TypeImage } from 'src/image/schema/image.schema';
@@ -41,8 +39,8 @@ export class ComicService {
 
       return ComicResponse;
     }
-    const addChapterTimestamp = new Date(comic.add_chapter_time).getTime();
-    const updateTimestamp = new Date(comic.update_time).getTime();
+    const addChapterTimestamp = comic.add_chapter_time != null ? new Date(comic.add_chapter_time).getTime() : null;
+    const updateTimestamp = comic.update_time != null ? new Date(comic.update_time).getTime() : null;
     return {
       id: comic._id,
       title: comic.title,
