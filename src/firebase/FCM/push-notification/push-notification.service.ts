@@ -24,8 +24,8 @@ export class PushNotificationService {
         // title: comicName,
         title,
         body,
+        click_action: process.env.CLICK_ACTION,
       },
-      click_action: process.env.CLICK_ACTION,
     };
     Promise.all([await admin.messaging().sendToDevice(token, payload)]);
   }
@@ -40,8 +40,8 @@ export class PushNotificationService {
         // title: comicName,
         title,
         body,
+        click_action: process.env.CLICK_ACTION,
       },
-      click_action: process.env.CLICK_ACTION,
     };
     Promise.all([await admin.messaging().sendToTopic(topic, payload)]);
   }
