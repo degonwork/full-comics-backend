@@ -11,7 +11,7 @@ import { UpdateComicDto } from './dto/update-comic.dto';
 import { ResponsePublisherComic } from './dto/response-publisher-comics.dto';
 import { CreateImageDto } from 'src/image/dto/create-image.dto';
 import { TypeImage } from 'src/image/schema/image.schema';
-import * as moment from 'moment'
+import * as moment from 'moment';
 @Injectable()
 export class ComicService {
   constructor(
@@ -20,7 +20,7 @@ export class ComicService {
     private readonly comicRepository: ComicRepository,
     private readonly imageService: ImageService,
     private readonly categoryService: CategoryService,
-  ) { }
+  ) {}
 
   async getComicOption(comic: ComicDocument, isDetail: boolean): Promise<any> {
     const comicPath = {
@@ -39,8 +39,8 @@ export class ComicService {
 
       return ComicResponse;
     }
-    const addChapterTimestamp = this._toTimeStamp(comic.add_chapter_time)
-    const updateTimestamp = this._toTimeStamp(comic.update_time)
+    const addChapterTimestamp = this._toTimeStamp(comic.add_chapter_time);
+    const updateTimestamp = this._toTimeStamp(comic.update_time);
     return {
       id: comic._id,
       title: comic.title,
@@ -50,7 +50,6 @@ export class ComicService {
       update_time: updateTimestamp,
     };
   }
-
 
   async createComic(
     createComicDto: CreateComicDto,
@@ -248,6 +247,9 @@ export class ComicService {
     const comic = await this.comicRepository.findOneObject({ _id: comicId });
     if (comicUpdate.title) {
       comic.title = comicUpdate.title;
+    }
+    if (comicUpdate.reads) {
+      comic.reads = comicUpdate.reads;
     }
     if (comicUpdate.description) {
       comic.description = comicUpdate.description;
