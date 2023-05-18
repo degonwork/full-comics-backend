@@ -11,6 +11,7 @@ import { CategoryModule } from './category/category.module';
 import { AuthModule } from './auth/users-auth/user.auth.module';
 import { PublisherAuthModule } from './auth/publishers-auth/publisher.auth.module';
 import { PushNotificationModule } from './firebase/FCM/push-notification/push-notification.module';
+import { DeviceModule } from './device/device.module';
 
 @Module({
   imports: [
@@ -31,9 +32,10 @@ import { PushNotificationModule } from './firebase/FCM/push-notification/push-no
     PublisherModule,
     ImageModule,
     CategoryModule,
-    PushNotificationModule
+    PushNotificationModule,
+    DeviceModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

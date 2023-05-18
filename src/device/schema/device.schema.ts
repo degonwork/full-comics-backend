@@ -11,4 +11,4 @@ export class Device {
   firebase_token: string;
 }
 
-export const PublisherSchema = SchemaFactory.createForClass(Device);
+export const DeviceSchema = SchemaFactory.createForClass(Device);
