@@ -6,7 +6,7 @@ import { PublisherAuthGuard } from './guards/auth.guard';
 
 @Controller('publisherauth')
 export class PublisherAuthController {
-  constructor(private publisherAuthService: PublisherAuthService) {}
+  constructor(private publisherAuthService: PublisherAuthService) { }
 
   @Post('register')
   async register(@Body() newPublisher: CreatePublisherDto) {
@@ -20,7 +20,8 @@ export class PublisherAuthController {
 
   @Post('refresh')
   async refreshToken(@Body() bodyToken: any) {
-    return await this.publisherAuthService.refresh(bodyToken.refreshToken);
+    const result = await this.publisherAuthService.refresh(bodyToken.refreshToken)
+    return result;
   }
 
   @Get('logout')

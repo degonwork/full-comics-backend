@@ -95,6 +95,12 @@ export class ComicController {
     return this.comicService.findComicById(id);
   }
 
+  //All comics
+  @Get('home/all-comics')
+  async findAllComic(@Query() query: LimitComic): Promise<Comic[]> {
+    return this.comicService.findAllComics(query.limit);
+  }
+
   // Hot comics
   @Get('home/hot-comics')
   async findHotComic(@Query() query: LimitComic): Promise<Comic[]> {

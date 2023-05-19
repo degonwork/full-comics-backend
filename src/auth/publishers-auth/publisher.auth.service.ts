@@ -11,7 +11,7 @@ export class PublisherAuthService {
   constructor(
     private readonly publisherService: PublisherService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   // Tao token
   private async _createToken(
@@ -20,21 +20,21 @@ export class PublisherAuthService {
   ): Promise<any> {
     const accessToken = this.jwtService.sign({ publisher });
 
-    if (!refresh) {
-      const refreshToken = this.jwtService.sign(
-        { publisher },
-        {
-          secret: process.env.SECRETKEY_REFRESH,
-          expiresIn: process.env.EXPIRESIN_REFRESH,
-        },
-      );
-      await this.publisherService.updateRefreshToken(publisher.publisherName, {
-        refreshToken: refreshToken,
-      });
-      return { accessToken, refreshToken };
-    } else {
-      return { accessToken };
-    }
+    // if (!refresh) {
+    const refreshToken = this.jwtService.sign(
+      { publisher },
+      {
+        secret: process.env.SECRETKEY_REFRESH,
+        expiresIn: process.env.EXPIRESIN_REFRESH,
+      },
+    );
+    await this.publisherService.updateRefreshToken(publisher.publisherName, {
+      refreshToken: refreshToken,
+    });
+    return { accessToken, refreshToken };
+    // } else {
+    //   return { accessToken, };
+    // }
   }
 
   // login
@@ -82,6 +82,7 @@ export class PublisherAuthService {
         payload.publisher.publisherName,
       );
       const newAccessToken = await this._createToken(publisher, true);
+      console.log(newAccessToken);
       return newAccessToken;
     } catch (e) {
       return 'Invalid token';

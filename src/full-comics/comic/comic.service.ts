@@ -8,12 +8,10 @@ import { ComicRepository } from './repository/comic.repository';
 import { Comic, ComicDocument } from './schema/comic.schema';
 import { CreateComicDto } from './dto/create-comic.dto';
 import { UpdateComicDto } from './dto/update-comic.dto';
-import { type } from 'os';
-import { async } from 'rxjs';
 import { ResponsePublisherComic } from './dto/response-publisher-comics.dto';
 import { CreateImageDto } from 'src/image/dto/create-image.dto';
 import { TypeImage } from 'src/image/schema/image.schema';
-
+import * as moment from 'moment';
 @Injectable()
 export class ComicService {
   constructor(
@@ -41,8 +39,8 @@ export class ComicService {
 
       return ComicResponse;
     }
-    const addChapterTimestamp = new Date(comic.add_chapter_time).getTime();
-    const updateTimestamp = new Date(comic.update_time).getTime();
+    const addChapterTimestamp = this._toTimeStamp(comic.add_chapter_time);
+    const updateTimestamp = this._toTimeStamp(comic.update_time);
     return {
       id: comic._id,
       title: comic.title,
@@ -154,6 +152,28 @@ export class ComicService {
     return comic;
   }
 
+  async findAllComics(limit?: number): Promise<any> {
+    const newComics = await this.comicRepository.findObjectNoLimit();
+    let responeNewComics = <any>[];
+    const filterNewComics = newComics.filter(
+      (newComics) => newComics.add_chapter_time !== null,
+    );
+    filterNewComics.sort((a, b) => {
+      return (
+        this._toTimeStamp(b.add_chapter_time) -
+        this._toTimeStamp(a.add_chapter_time)
+      );
+    });
+    const limitedComics = limit
+      ? filterNewComics.slice(0, limit)
+      : filterNewComics;
+    for (const newComic of limitedComics) {
+      const responeNewComic = await this.getComicOption(newComic, true);
+      responeNewComics.push(responeNewComic);
+    }
+    return responeNewComics;
+  }
+
   async findHotComic(limit?: number): Promise<any> {
     const hotComics = await this.comicRepository.findObjectNoLimit();
     let responeHotComics = <any>[];
@@ -191,8 +211,8 @@ export class ComicService {
   }
 
   _toTimeStamp(strDate: string): number {
-    let datum = Date.parse(strDate);
-    return datum;
+    const timestamp = moment(strDate, 'DD/MM/YYYY, hh:mm:ss').valueOf();
+    return timestamp;
   }
 
   async publisherComics(publisherId: any): Promise<ResponsePublisherComic[]> {
@@ -227,6 +247,9 @@ export class ComicService {
     const comic = await this.comicRepository.findOneObject({ _id: comicId });
     if (comicUpdate.title) {
       comic.title = comicUpdate.title;
+    }
+    if (comicUpdate.reads) {
+      comic.reads = comicUpdate.reads;
     }
     if (comicUpdate.description) {
       comic.description = comicUpdate.description;

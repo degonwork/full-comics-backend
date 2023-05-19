@@ -41,4 +41,4 @@ import { extname } from 'path';
   providers: [ChapterService, ChapterRepository, ComicService],
   exports: [ChapterService],
 })
-export class ChapterModule {}
+export class ChapterModule { }
