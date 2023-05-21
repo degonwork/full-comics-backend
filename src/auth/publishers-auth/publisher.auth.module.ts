@@ -8,21 +8,21 @@ import { PublisherJwtStrategy } from './strategies/jwt.strategy';
 import { PublisherModule } from 'src/publisher/publisher.module';
 
 @Module({
-    imports: [
-        PublisherModule,
-        PassportModule.register({ defaultStrategy: "jwt" }),
-        JwtModule.registerAsync({
-            imports: [ConfigModule],
-            useFactory: (configService: ConfigService) => ({
-                secret: configService.get("SECRETKEY"),
-                signOptions: {
-                    expiresIn: configService.get("EXPIRESIN"),
-                }
-            }),
-            inject: [ConfigService],
-        }),
-    ],
-    controllers: [PublisherAuthController],
-    providers: [PublisherAuthService, PublisherJwtStrategy]
+  imports: [
+    PublisherModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('SECRETKEY'),
+        signOptions: {
+          expiresIn: configService.get('EXPIRESIN'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
+  ],
+  controllers: [PublisherAuthController],
+  providers: [PublisherAuthService, PublisherJwtStrategy],
 })
-export class PublisherAuthModule { }
+export class PublisherAuthModule {}

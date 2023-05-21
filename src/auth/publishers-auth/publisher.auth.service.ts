@@ -11,7 +11,7 @@ export class PublisherAuthService {
   constructor(
     private readonly publisherService: PublisherService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   // Tao token
   private async _createToken(
