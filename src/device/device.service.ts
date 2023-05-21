@@ -10,7 +10,12 @@ export class DeviceService {
   async createDevice(createDeviceDto: CreateDeviceDto) {
     const existingDevice = await this.findDevice(createDeviceDto.device_id);
     if (existingDevice) {
-      return 'Device Existed!';
+      if (existingDevice.firebase_token === createDeviceDto.firebase_token) {
+        return 'Device Existed!';
+      }
+      existingDevice.firebase_token = createDeviceDto.firebase_token;
+      const deviceUpdated = await existingDevice.save();
+      return deviceUpdated;
     }
     return this.deviceRepository.createObject(createDeviceDto);
   }
