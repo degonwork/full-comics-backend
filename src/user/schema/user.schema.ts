@@ -7,11 +7,11 @@ export type UserDocument = User & Document;
 export class User {
   @Prop()
   device_id: string;
-  @Prop()
+  @Prop({ required: true })
   userName: string;
   @Prop()
   email: string;
-  @Prop()
+  @Prop({ required: true })
   password: string;
   @Prop()
   firebase_token: string;

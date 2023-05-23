@@ -21,7 +21,6 @@ export class ComicService {
     private readonly imageService: ImageService,
     private readonly categoryService: CategoryService,
   ) {}
-
   async getComicOption(comic: ComicDocument, isDetail: boolean): Promise<any> {
     const comicPath = {
       image_detail_path: (
