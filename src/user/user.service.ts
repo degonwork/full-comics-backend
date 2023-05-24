@@ -22,19 +22,63 @@ export class UserService {
 
   // Tim kiem nguoi dung theo email
   async findbyEmail(email: string): Promise<UserDocument> {
-    return this.userRepository.findOneObject({ email });
+    try {
+      const result: UserDocument | null =
+        await this.userRepository.findOneObject({ email });
+
+      if (result) {
+        return result;
+      } else {
+        throw new Error('User not found by email');
+      }
+    } catch (error) {
+      throw new Error(`Error finding user by email: ${error.message}`);
+    }
   }
 
   async findbyUserName(userName: string): Promise<UserDocument> {
-    return this.userRepository.findOneObject({ userName });
+    try {
+      const result: UserDocument | null =
+        await this.userRepository.findOneObject({ userName });
+
+      if (result) {
+        return result;
+      } else {
+        throw new Error('User not found by username');
+      }
+    } catch (error) {
+      throw new Error(`Error finding user by username: ${error.message}`);
+    }
   }
 
   async findbyUUID(uuid: string): Promise<UserDocument> {
-    return this.userRepository.findOneObject({ uuid });
+    try {
+      const result: UserDocument | null =
+        await this.userRepository.findOneObject({ uuid });
+
+      if (result) {
+        return result;
+      } else {
+        throw new Error('User not found by UUID');
+      }
+    } catch (error) {
+      throw new Error(`Error finding user by UUID: ${error.message}`);
+    }
   }
 
   async findbyId(_id: string): Promise<UserDocument> {
-    return this.userRepository.findOneObject({ _id });
+    try {
+      const result: UserDocument | null =
+        await this.userRepository.findOneObject({ _id });
+
+      if (result) {
+        return result;
+      } else {
+        throw new Error('User not found by ID');
+      }
+    } catch (error) {
+      throw new Error(`Error finding user by ID: ${error.message}`);
+    }
   }
 
   // Tao moi nguoi dung

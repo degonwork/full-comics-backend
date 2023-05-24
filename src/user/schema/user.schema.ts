@@ -5,8 +5,6 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User {
-  @Prop()
-  device_id: string;
   @Prop({ required: true })
   userName: string;
   @Prop()
@@ -21,6 +19,10 @@ export class User {
   image_id: string;
   @Prop()
   refreshToken: string;
+  @Prop({ default: 0 })
+  amount: number;
+  @Prop()
+  uuid: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

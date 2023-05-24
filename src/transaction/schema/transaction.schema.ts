@@ -8,8 +8,10 @@ export class Transaction {
   @Prop()
   user_id: string;
   @Prop()
-  amount: number;
+  uuid: string;
   @Prop({ default: 0 })
+  amount: number;
+  @Prop()
   deposit_time: string;
 }
 

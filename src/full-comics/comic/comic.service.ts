@@ -12,6 +12,7 @@ import { ResponsePublisherComic } from './dto/response-publisher-comics.dto';
 import { CreateImageDto } from 'src/image/dto/create-image.dto';
 import { TypeImage } from 'src/image/schema/image.schema';
 import * as moment from 'moment';
+import { ImageResponse } from 'src/image/dto/image-response.dto';
 @Injectable()
 export class ComicService {
   constructor(
@@ -22,17 +23,28 @@ export class ComicService {
     private readonly categoryService: CategoryService,
   ) {}
   async getComicOption(comic: ComicDocument, isDetail: boolean): Promise<any> {
-    const comicPath = {
-      image_detail_path: (
-        await this.imageService.findImageById(comic.image_detail_id)
-      ).path,
-      image_thumnail_square_path: (
-        await this.imageService.findImageById(comic.image_thumnail_square_id)
-      ).path,
-      image_thumnail_rectangle_path: (
-        await this.imageService.findImageById(comic.image_thumnail_rectangle_id)
-      ).path,
+    const comicPath: { [key: string]: ImageResponse } = {
+      image_detail: {
+        id: comic.image_detail_id,
+        path: (await this.imageService.findImageById(comic.image_detail_id))
+          .path,
+      },
+      image_thumnail_square: {
+        id: comic.image_thumnail_square_id,
+        path: (
+          await this.imageService.findImageById(comic.image_thumnail_square_id)
+        ).path,
+      },
+      image_thumnail_rectangle: {
+        id: comic.image_thumnail_rectangle_id,
+        path: (
+          await this.imageService.findImageById(
+            comic.image_thumnail_rectangle_id,
+          )
+        ).path,
+      },
     };
+
     if (isDetail) {
       const ComicResponse = new ResponseComic(comic, comicPath);
 
@@ -108,7 +120,7 @@ export class ComicService {
     publisher_id: string,
   ): Promise<ResponsePublisherComic[]> {
     const publisherComics: ResponsePublisherComic[] = [];
-    const comics = await this.comicRepository.findObjectesBy(
+    const comics = await this.comicRepository.findObjectsBy(
       'publisher_id',
       publisher_id,
     );
@@ -171,6 +183,23 @@ export class ComicService {
       responeNewComics.push(responeNewComic);
     }
     return responeNewComics;
+  }
+
+  async findsByCategory(categoryName: string, limit?: number): Promise<any> {
+    const comics = await this.comicRepository.findObjectsBy(
+      'categories',
+      categoryName,
+    );    
+    let responseComics: any[] = [];
+    comics.sort((a, b) => {
+      return b.reads - a.reads;
+    });
+    const limitedComics = limit ? comics.slice(0, limit) : comics;
+    for (const comic of limitedComics) {
+      const responseComic = await this.getComicOption(comic, false);
+      responseComics.push(responseComic);
+    }    
+    return responseComics;
   }
 
   async findHotComic(limit?: number): Promise<any> {

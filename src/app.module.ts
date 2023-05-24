@@ -13,6 +13,7 @@ import { PublisherAuthModule } from './auth/publishers-auth/publisher.auth.modul
 import { PushNotificationModule } from './firebase/FCM/push-notification/push-notification.module';
 import { DeviceModule } from './device/device.module';
 import { TransactionModule } from './transaction/transaction.module';
+import { UuidModule } from './uuid/uuid.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { TransactionModule } from './transaction/transaction.module';
     PushNotificationModule,
     DeviceModule,
     TransactionModule,
+    UuidModule,
   ],
   controllers: [],
   providers: [],

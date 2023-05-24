@@ -104,8 +104,7 @@ export class ChapterService {
     const images = await Promise.all(
       imageIds.map((id) => this.imageService.findImageById(id)),
     );
-    const imageUrls = images.map((image) => image.path);
-    return { ...new ResponseChapter(chapter, imageUrls) };
+    return { ...new ResponseChapter(chapter, images) };
   }
 
   // async detailChapter(id: string, uuid: string): Promise<ChapterDocument> {
@@ -141,7 +140,7 @@ export class ChapterService {
   async findAllChaptersByPublisherId(
     publisherId: any,
   ): Promise<ChapterDocument[]> {
-    return await this.chapterRepository.findObjectesBy(
+    return await this.chapterRepository.findObjectsBy(
       'publisher_id',
       publisherId,
     );
