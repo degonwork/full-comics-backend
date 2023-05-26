@@ -6,27 +6,27 @@ export type ComicDocument = Comic & Document;
 
 @Schema()
 export class Comic {
-  @Prop()
+  @Prop({ required: true })
   image_detail_id: string;
-  @Prop()
+  @Prop({ required: true })
   image_thumnail_square_id: string;
-  @Prop()
+  @Prop({ required: true })
   image_thumnail_rectangle_id: string;
-  @Prop()
+  @Prop({ required: true })
   title: string;
-  @Prop()
+  @Prop({ type: [String] })
   categories: string[];
-  @Prop()
+  @Prop({ default: null })
   author: string;
-  @Prop()
+  @Prop({ default: null })
   description: string;
-  @Prop()
+  @Prop({ default: 0 })
   year: number;
   @Prop()
   chapters: UpdateChaptersComic[];
   @Prop({ default: null })
   update_time: string;
-  @Prop()
+  @Prop({ default: 0 })
   reads: number;
   @Prop({ default: null })
   publisher_id: string;

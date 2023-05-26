@@ -9,7 +9,7 @@ import { ImageService } from 'src/image/image.service';
 export class DeviceRepository extends EntityRepository<DeviceDocument> {
   constructor(
     @InjectModel(Device.name)
-    private readonly deviceModel: Model<DeviceDocument>
+    private readonly deviceModel: Model<DeviceDocument>,
   ) {
     super(deviceModel, null);
   }

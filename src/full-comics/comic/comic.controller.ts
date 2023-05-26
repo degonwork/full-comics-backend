@@ -19,13 +19,12 @@ import { ComicService } from './comic.service';
 import { CreateComicDto } from './dto/create-comic.dto';
 import { Comic, ComicDocument } from './schema/comic.schema';
 import { LimitComic } from './dto/limit-comic.dto';
-import { async } from 'rxjs';
 import { ResponsePublisherComic } from './dto/response-publisher-comics.dto';
 import { UpdateComicDto } from './dto/update-comic.dto';
 
 @Controller('comics')
 export class ComicController {
-  constructor(private readonly comicService: ComicService) { }
+  constructor(private readonly comicService: ComicService) {}
 
   // Tạo comic
   @UseGuards(PublisherAuthGuard)
@@ -38,33 +37,6 @@ export class ComicController {
     ]),
   )
   async createComic(
-    @Body() createComicDto: CreateComicDto,
-    @Body('categories', ParseArrayPipe) categories: string[],
-    @UploadedFiles()
-    files: {
-      image_detail: Express.Multer.File;
-      image_thumnail_square: Express.Multer.File;
-      image_thumnail_rectangle: Express.Multer.File;
-    },
-  ): Promise<ComicDocument> {
-    return this.comicService.createComic(
-      { ...createComicDto, categories },
-      files.image_detail,
-      files.image_thumnail_square,
-      files.image_thumnail_rectangle,
-    );
-  }
-
-  // Create comics test
-  @Post('create/test')
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'image_detail', maxCount: 1 },
-      { name: 'image_thumnail_square', maxCount: 1 },
-      { name: 'image_thumnail_rectangle', maxCount: 1 },
-    ]),
-  )
-  async createComicTest(
     @Body() createComicDto: CreateComicDto,
     @Body('categories', ParseArrayPipe) categories: string[],
     @UploadedFiles()
@@ -149,5 +121,14 @@ export class ComicController {
       files.image_thumnail_rectangle,
     );
     return comicUpdated;
+  }
+
+  // find comics theo category
+  @Get('/category/:categoryName')
+  async findComicsByCategory(
+    @Param('categoryName') categoryName: string,
+    @Query() query: LimitComic,
+  ): Promise<Comic[]> {    
+    return this.comicService.findsByCategory(categoryName, query.limit);
   }
 }

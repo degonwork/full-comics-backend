@@ -11,7 +11,7 @@ export class PublisherAuthService {
   constructor(
     private readonly publisherService: PublisherService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   // Tao token
   private async _createToken(
@@ -82,7 +82,6 @@ export class PublisherAuthService {
         payload.publisher.publisherName,
       );
       const newAccessToken = await this._createToken(publisher, true);
-      console.log(newAccessToken);
       return newAccessToken;
     } catch (e) {
       return 'Invalid token';
