@@ -21,7 +21,7 @@ export class ComicService {
     private readonly comicRepository: ComicRepository,
     private readonly imageService: ImageService,
     private readonly categoryService: CategoryService,
-  ) {}
+  ) { }
   async getComicOption(comic: ComicDocument, isDetail: boolean): Promise<any> {
     const comicPath: { [key: string]: ImageResponse } = {
       image_detail: {
@@ -47,7 +47,6 @@ export class ComicService {
 
     if (isDetail) {
       const ComicResponse = new ResponseComic(comic, comicPath);
-
       return ComicResponse;
     }
     const addChapterTimestamp = this._toTimeStamp(comic.add_chapter_time);
@@ -189,7 +188,7 @@ export class ComicService {
     const comics = await this.comicRepository.findObjectsBy(
       'categories',
       categoryName,
-    );    
+    );
     let responseComics: any[] = [];
     comics.sort((a, b) => {
       return b.reads - a.reads;
@@ -198,7 +197,7 @@ export class ComicService {
     for (const comic of limitedComics) {
       const responseComic = await this.getComicOption(comic, false);
       responseComics.push(responseComic);
-    }    
+    }
     return responseComics;
   }
 

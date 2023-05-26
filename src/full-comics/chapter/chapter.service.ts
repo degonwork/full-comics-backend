@@ -31,7 +31,7 @@ export class ChapterService {
     private readonly chapterReadService: ChapterReadService,
     private readonly imageService: ImageService,
     private readonly comicRepository: ComicRepository,
-  ) {}
+  ) { }
 
   // Tạo chapter = upload file
   async createChapterFile(
@@ -50,6 +50,7 @@ export class ChapterService {
         imageThumnailNew,
         imageThumnail,
       );
+
       createChapterDto.image_thumnail = imageChapterThumnail;
     }
     // Tạo content
@@ -73,11 +74,14 @@ export class ChapterService {
     //Tao publisher_id
     createChapterDto.publisher_id = reqUser.id;
     const chapter = await this.chapterRepository.createObject(createChapterDto);
-    const updateChaptersComic = new UpdateChaptersComic(
-      chapter.id,
-      chapter.chapter_des,
-      chapter.image_thumnail.path,
-    );
+    const updateChaptersComic = {
+      id: chapter.id,
+      chapter_des: chapter.chapter_des,
+      image_thumnail: {
+        path: chapter.image_thumnail.path,
+        id: chapter.image_thumnail._id.toString()
+      }
+    };
     updateComicDto.chapters = (
       await this.comicService.findComicById(createChapterDto.comic_id)
     ).chapters;
@@ -241,7 +245,7 @@ export class ChapterService {
       });
       for (const chapters of comicUpdate.chapters) {
         if (chapters.chapter_id === chapter.id) {
-          chapters.image_thumnail = chapter.image_thumnail.path;
+          chapters.image_thumnail.path = chapter.image_thumnail.path;
           break;
         }
       }
