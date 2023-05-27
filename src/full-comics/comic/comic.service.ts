@@ -21,7 +21,7 @@ export class ComicService {
     private readonly comicRepository: ComicRepository,
     private readonly imageService: ImageService,
     private readonly categoryService: CategoryService,
-  ) { }
+  ) {}
   async getComicOption(comic: ComicDocument, isDetail: boolean): Promise<any> {
     const comicPath: { [key: string]: ImageResponse } = {
       image_detail: {
@@ -58,6 +58,7 @@ export class ComicService {
       reads: comic.reads,
       add_chapter_time: addChapterTimestamp,
       update_time: updateTimestamp,
+      times_ads: 5,
     };
   }
 
