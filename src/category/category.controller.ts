@@ -8,7 +8,6 @@ export class CategoryController {
   // all category
   @Get('/all')
   async allCategory() {
-    console.log('here');
     return this.categoryService.findAllCatrgories();
   }
 }

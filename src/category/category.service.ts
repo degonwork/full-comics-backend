@@ -22,6 +22,11 @@ export class CategoryService {
     if (categories === null || categories.length === 0) {
       return 'No categories created';
     }
-    return categories;
+    return categories.map((category) => {
+      return {
+        _id: category._id,
+        name: category.name,
+      };
+    });
   }
 }
