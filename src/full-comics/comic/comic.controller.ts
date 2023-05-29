@@ -21,10 +21,14 @@ import { Comic, ComicDocument } from './schema/comic.schema';
 import { LimitComic } from './dto/limit-comic.dto';
 import { ResponsePublisherComic } from './dto/response-publisher-comics.dto';
 import { UpdateComicDto } from './dto/update-comic.dto';
+import { CategoryService } from 'src/category/category.service';
 
 @Controller('comics')
 export class ComicController {
-  constructor(private readonly comicService: ComicService) {}
+  constructor(
+    private readonly comicService: ComicService,
+    private readonly categoryService: CategoryService,
+  ) {}
 
   // Tạo comic
   @UseGuards(PublisherAuthGuard)
@@ -128,7 +132,8 @@ export class ComicController {
   async findComicsByCategory(
     @Param('categoryName') categoryName: string,
     @Query() query: LimitComic,
-  ): Promise<Comic[]> {    
+  ): Promise<Comic[]> {
     return this.comicService.findsByCategory(categoryName, query.limit);
   }
+
 }

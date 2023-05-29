@@ -7,7 +7,7 @@ export enum TypeImage {
   COMIC = 'comic',
   CHAPTER = 'chapter',
   CONTENT = 'content',
-  PUBLISHER = 'publisher,',
+  PUBLISHER = 'publisher',
 }
 
 @Schema()

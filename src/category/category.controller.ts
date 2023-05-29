@@ -5,4 +5,10 @@ import { CategoryService } from './category.service';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
+  // all category
+  @Get('/all')
+  async allCategory() {
+    console.log('here');
+    return this.categoryService.findAllCatrgories();
+  }
 }
