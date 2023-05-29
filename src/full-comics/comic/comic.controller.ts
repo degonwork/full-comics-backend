@@ -135,5 +135,4 @@ export class ComicController {
   ): Promise<Comic[]> {
     return this.comicService.findsByCategory(categoryName, query.limit);
   }
-
 }
