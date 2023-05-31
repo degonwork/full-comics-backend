@@ -5,13 +5,28 @@ import { CategoryDocument } from './schema/category.shema';
 
 @Injectable()
 export class CategoryService {
-    constructor(private readonly categoryRepository: CategoryRepository) { }
+  constructor(private readonly categoryRepository: CategoryRepository) {}
 
-    async createCategory(createCategoryDto: CreateCategoryDto): Promise<CategoryDocument> {
-        return this.categoryRepository.createObject(createCategoryDto);
-    }
+  async createCategory(
+    createCategoryDto: CreateCategoryDto,
+  ): Promise<CategoryDocument> {
+    return this.categoryRepository.createObject(createCategoryDto);
+  }
 
-    async findCategory(name: string): Promise<CategoryDocument> {
-        return this.categoryRepository.findOneObject({ name });
+  async findCategory(name: string): Promise<CategoryDocument> {
+    return this.categoryRepository.findOneObject({ name });
+  }
+
+  async findAllCatrgories(): Promise<any> {
+    const categories = await this.categoryRepository.findObjectNoLimit();
+    if (categories === null || categories.length === 0) {
+      return 'No categories created';
     }
+    return categories.map((category) => {
+      return {
+        _id: category._id,
+        name: category.name,
+      };
+    });
+  }
 }

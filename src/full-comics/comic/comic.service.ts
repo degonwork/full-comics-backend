@@ -21,7 +21,7 @@ export class ComicService {
     private readonly comicRepository: ComicRepository,
     private readonly imageService: ImageService,
     private readonly categoryService: CategoryService,
-  ) { }
+  ) {}
   async getComicOption(comic: ComicDocument, isDetail: boolean): Promise<any> {
     const comicPath: { [key: string]: ImageResponse } = {
       image_detail: {
@@ -58,6 +58,7 @@ export class ComicService {
       reads: comic.reads,
       add_chapter_time: addChapterTimestamp,
       update_time: updateTimestamp,
+      times_ads: 5,
     };
   }
 
@@ -161,27 +162,26 @@ export class ComicService {
     }
     return comic;
   }
-
   async findAllComics(limit?: number): Promise<any> {
-    const newComics = await this.comicRepository.findObjectNoLimit();
-    let responeNewComics = <any>[];
-    const filterNewComics = newComics.filter(
-      (newComics) => newComics.add_chapter_time !== null,
+    const allComics = await this.comicRepository.findObjectNoLimit(); // xử lý limit ở dưới
+    let responeAllComics = <any>[];
+    const filterAllComics = allComics.filter(
+      (allComics) => allComics.add_chapter_time !== null,
     );
-    filterNewComics.sort((a, b) => {
+    filterAllComics.sort((a, b) => {
       return (
         this._toTimeStamp(b.add_chapter_time) -
         this._toTimeStamp(a.add_chapter_time)
       );
     });
     const limitedComics = limit
-      ? filterNewComics.slice(0, limit)
-      : filterNewComics;
-    for (const newComic of limitedComics) {
-      const responeNewComic = await this.getComicOption(newComic, true);
-      responeNewComics.push(responeNewComic);
+      ? filterAllComics.slice(0, limit)
+      : filterAllComics;
+    for (const allComic of limitedComics) {
+      const responeAllComic = await this.getComicOption(allComic, true);
+      responeAllComics.push(responeAllComic);
     }
-    return responeNewComics;
+    return responeAllComics;
   }
 
   async findsByCategory(categoryName: string, limit?: number): Promise<any> {
