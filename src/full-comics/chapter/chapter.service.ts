@@ -75,7 +75,7 @@ export class ChapterService {
     createChapterDto.publisher_id = reqUser.id;
     const chapter = await this.chapterRepository.createObject(createChapterDto);
     const updateChaptersComic = {
-      id: chapter.id,
+      chapter_id: chapter.id,
       chapter_des: chapter.chapter_des,
       image_thumnail: {
         path: chapter.image_thumnail.path,
