@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUuidDto } from './dto/create-uuid.dto';
-import { UuidRepository } from './repository/Uuid.repository';
-import { UuidDocument } from './schema/Uuid.schema';
+import { UuidRepository } from './repository/uuid.repository'
+import { UuidDocument } from './schema/uuid.schema';
 
 @Injectable()
 export class UuidService {
