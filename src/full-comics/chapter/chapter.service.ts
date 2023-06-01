@@ -75,7 +75,7 @@ export class ChapterService {
     createChapterDto.publisher_id = reqUser.id;
     const chapter = await this.chapterRepository.createObject(createChapterDto);
     const updateChaptersComic = {
-      id: chapter.id,
+      chapter_id: chapter.id,
       chapter_des: chapter.chapter_des,
       image_thumnail: {
         path: chapter.image_thumnail.path,
@@ -210,13 +210,14 @@ export class ChapterService {
   async updateChapter(
     chapterId: string,
     chapterUpdateDto: UpdateChapterDto,
-    image_contents: Express.Multer.File[],
+    images_content: Express.Multer.File[],
     image_thumnail: Express.Multer.File,
   ): Promise<ChapterDocument> {
     let listUpdateChapterContent: CreateChapterContentDto[] = [];
     const chapter = await this.chapterRepository.findOneObject({
       _id: chapterId,
     });
+    
     const comicUpdate = await this.comicRepository.findOneObject({
       _id: chapter.comic_id,
     });
@@ -227,11 +228,15 @@ export class ChapterService {
       });
       for (const chapters of comicUpdate.chapters) {
         if (chapters.chapter_id === chapter.id) {
-          chapters.chapter_des = chapter.chapter_des;
+          chapters.chapter_des = chapter.chapter_des;         
+          console.log();
+           
           break;
         }
       }
-    }
+    }    
+    console.log(comicUpdate.chapters);
+    
     const imageThumnailNew = new CreateImageDto();
     imageThumnailNew.type = TypeImage.CHAPTER;
     if (image_thumnail) {
@@ -250,8 +255,8 @@ export class ChapterService {
         }
       }
     }
-    if (image_contents) {
-      for (const image_content of image_contents) {
+    if (images_content) {
+      for (const image_content of images_content) {
         const imageFileChapterContent = await this.imageService.createImageFile(
           new CreateChapterContentDto('', '', TypeImage.CONTENT),
           image_content,
@@ -270,8 +275,10 @@ export class ChapterService {
     }
     chapter.update_time = new Date().toLocaleString('en-GB', { hour12: false });
     const chapterUpdated = await chapter.save();
+    console.log(comicUpdate);
+
     await this.comicRepository.findOneObjectAndUpdate(
-      comicUpdate.id,
+      comicUpdate._id,
       comicUpdate,
     );
     return chapterUpdated;
