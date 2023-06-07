@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Transaction, TransactionSchema } from './schema/transaction.schema';
 import { UuidModule } from 'src/uuid/uuid.module';
 import { UserModule } from 'src/user/user.module';
-import { TransactionService } from './Transaction.service';
+import { TransactionService } from './transaction.service';
 import { TransactionRepository } from './repository/transaction.repository';
 import { TransactionController } from './transaction.controller';
 
