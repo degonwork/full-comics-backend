@@ -210,7 +210,9 @@ export class ComicService {
     filterHotComics.sort((a, b) => {
       return b.reads - a.reads;
     });
-    const limitedComics = limit ? filterHotComics.slice(0, limit) : filterHotComics;
+    const limitedComics = limit
+      ? filterHotComics.slice(0, limit)
+      : filterHotComics;
     for (const hotComic of limitedComics) {
       const responseHotComic = await this.getComicOption(hotComic, false);
       responeHotComics.push(responseHotComic);
@@ -252,12 +254,13 @@ export class ComicService {
   }
 
   async searchComics(query: string): Promise<ComicDocument[]> {
+    let responeSearchComics = <any>[];
     const queryWithoutVietnameseMarks = query
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
     const rawRegex = new RegExp(query, 'i');
     const regex = new RegExp(queryWithoutVietnameseMarks, 'i');
-    return await this.comicRepository.find({
+    const comicSearched = await this.comicRepository.find({
       $or: [
         { title: rawRegex },
         { categories: { $elemMatch: { $regex: rawRegex } } },
@@ -265,6 +268,15 @@ export class ComicService {
         { categories: { $elemMatch: { $regex: regex } } },
       ],
     });
+    const filterSearchComics = comicSearched.filter(
+      (comicSearched) => comicSearched.add_chapter_time !== null,
+    );
+
+    for (const comic of filterSearchComics) {
+      const responseComic = await this.getComicOption(comic, false);
+      responeSearchComics.push(responseComic);
+    }
+    return responeSearchComics;
   }
 
   async updateComic(
