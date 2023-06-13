@@ -234,9 +234,7 @@ export class ChapterService {
           break;
         }
       }
-    }    
-    console.log(comicUpdate.chapters);
-    
+    }        
     const imageThumnailNew = new CreateImageDto();
     imageThumnailNew.type = TypeImage.CHAPTER;
     if (image_thumnail) {
@@ -275,8 +273,6 @@ export class ChapterService {
     }
     chapter.update_time = new Date().toLocaleString('en-GB', { hour12: false });
     const chapterUpdated = await chapter.save();
-    console.log(comicUpdate);
-
     await this.comicRepository.findOneObjectAndUpdate(
       comicUpdate._id,
       comicUpdate,

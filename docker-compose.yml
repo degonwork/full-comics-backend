@@ -17,3 +17,10 @@ services:
       - mongo
     ports:
       - 8081:8081
+  mongo-product:
+    container_name: full-comics-product
+    image: mongo:latest
+    environment:
+      - MONGO_DATABASE="full-comics-product"
+    ports:
+      - 27018:27017

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { TransactionRepository } from './repository/transaction.repository';
-import { CreateTransactionDto } from './dto/create-Transaction.dto';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransactionDocument } from './schema/transaction.schema';
 import { UserService } from 'src/user/user.service';
 import { UuidService } from 'src/uuid/uuid.service';
 import { UserDocument } from 'src/user/schema/user.schema';
-import { UuidDocument } from 'src/uuid/schema/Uuid.schema';
+import { UuidDocument } from 'src/uuid/schema/uuid.schema';
 
 @Injectable()
 export class TransactionService {
