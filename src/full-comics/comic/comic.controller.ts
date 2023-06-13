@@ -62,7 +62,7 @@ export class ComicController {
   @Get('/search')
   async searchComics(@Query('q') query: any): Promise<any> {
     const comics = await this.comicService.searchComics(query);
-    return { data: comics };
+    return comics;
   }
 
   // Lấy detail comic
