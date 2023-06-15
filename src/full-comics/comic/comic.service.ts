@@ -151,6 +151,7 @@ export class ComicService {
   ): Promise<Comic> {
     return this.comicRepository.findOneObjectAndUpdate({ _id }, updateComicDto);
   }
+
   async findComicByIdAndSetComicPublisher(
     _id: string,
     publisher_id: string,
@@ -275,7 +276,7 @@ export class ComicService {
     for (const comic of filterSearchComics) {
       const responseComic = await this.getComicOption(comic, false);
       responseComic.description = comic.description
-      responeSearchComics.push(responseComic);      
+      responeSearchComics.push(responseComic);
     }
     return responeSearchComics;
   }
@@ -341,4 +342,23 @@ export class ComicService {
     const comicUpdated = await comic.save();
     return comicUpdated;
   }
+
+  async removeChapterFromComic(chapterId: string, comicId: string): Promise<boolean> {
+    const comic = await this.comicRepository.findOneObject({ comicId });
+
+    const chapterIndex = comic.chapters.findIndex(
+      (chapter) => chapter.chapter_id === chapterId
+    );
+    if (chapterIndex !== -1) {
+      comic.chapters.splice(chapterIndex, 1);
+      comic.add_chapter_time = new Date().toLocaleString('en-GB', {
+        hour12: false,
+      });;
+      await comic.save()
+      return true;
+    }
+    return false;
+  }
+
+
 }
