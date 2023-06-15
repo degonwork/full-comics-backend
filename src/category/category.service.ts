@@ -5,7 +5,7 @@ import { CategoryDocument } from './schema/category.shema';
 
 @Injectable()
 export class CategoryService {
-  constructor(private readonly categoryRepository: CategoryRepository) {}
+  constructor(private readonly categoryRepository: CategoryRepository) { }
 
   async createCategory(
     createCategoryDto: CreateCategoryDto,
@@ -28,5 +28,11 @@ export class CategoryService {
         name: category.name,
       };
     });
+  }
+  async deleteCategory(id: string): Promise<any> {
+    if (await this.categoryRepository.deleteObjectById(id)) {
+      return 'Successful delete'
+    }
+    return 'Invalid category'
   }
 }
