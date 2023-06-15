@@ -150,6 +150,13 @@ export class ChapterService {
     );
   }
 
+  async deleteChapter(id: string): Promise<any> {
+    if (await this.chapterRepository.deleteObjectById(id)) {
+      return 'Successful delete'
+    }
+    return 'Invalid category'
+  }
+
   async createImageFile(
     createImageDto: CreateImageDto,
     file: Express.Multer.File,
@@ -217,7 +224,7 @@ export class ChapterService {
     const chapter = await this.chapterRepository.findOneObject({
       _id: chapterId,
     });
-    
+
     const comicUpdate = await this.comicRepository.findOneObject({
       _id: chapter.comic_id,
     });
@@ -228,13 +235,13 @@ export class ChapterService {
       });
       for (const chapters of comicUpdate.chapters) {
         if (chapters.chapter_id === chapter.id) {
-          chapters.chapter_des = chapter.chapter_des;         
+          chapters.chapter_des = chapter.chapter_des;
           console.log();
-           
+
           break;
         }
       }
-    }        
+    }
     const imageThumnailNew = new CreateImageDto();
     imageThumnailNew.type = TypeImage.CHAPTER;
     if (image_thumnail) {
@@ -279,4 +286,6 @@ export class ChapterService {
     );
     return chapterUpdated;
   }
+
+
 }
