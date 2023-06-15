@@ -151,11 +151,23 @@ export class ChapterService {
   }
 
   async deleteChapter(id: string): Promise<any> {
-    if (await this.chapterRepository.deleteObjectById(id)) {
-      return 'Successful delete'
+    const chapter = await this.findChapterById(id);
+    const comicId = chapter.comic_id;
+    const comic = await this.comicService.findComicById(comicId);
+    if (comic.chapters.length <= 1) {
+      return 'Cannot delete the only chapter in the comic';
     }
-    return 'Invalid category'
+    const deleteResult = await this.chapterRepository.deleteObjectById(id);
+    if (deleteResult) {
+      const updatedComic = await this.comicService.removeChapterFromComic(id, comicId);
+      if (updatedComic) {
+        return 'Successful delete';
+      }
+      return 'Failed to update comic';
+    }
+    return 'Invalid chapter';
   }
+
 
   async createImageFile(
     createImageDto: CreateImageDto,
