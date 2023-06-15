@@ -7,6 +7,7 @@ import {
   Put,
   Req,
   Res,
+  Delete,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -21,7 +22,7 @@ import { UpdateChapterDto } from './dto/update-chapter.dto';
 
 @Controller('chapters')
 export class ChapterController {
-  constructor(private readonly chapterService: ChapterService) {}
+  constructor(private readonly chapterService: ChapterService) { }
 
   // Tạo chapter mới = upload
   @UseGuards(PublisherAuthGuard)
@@ -122,5 +123,10 @@ export class ChapterController {
       files.image_thumnail,
     );
     return chaterUpdated;
+  }
+
+  @Delete('delete/:id')
+  async deleteChapter(@Param('id') id: string) {
+    return this.chapterService.deleteChapter(id);
   }
 }

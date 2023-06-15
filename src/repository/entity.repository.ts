@@ -8,7 +8,7 @@ export abstract class EntityRepository<T extends Document> {
   constructor(
     private readonly entityModel: Model<T>,
     private readonly imageService: ImageService | null,
-  ) {}
+  ) { }
 
   async createImage(imageObject: CreateImageDto): Promise<string | null> {
     const imageObjectId = (await this.imageService.createImage(imageObject))
@@ -62,10 +62,15 @@ export abstract class EntityRepository<T extends Document> {
   ): Promise<T[]> | null {
     const query: any = {};
     query[fieldName] = fieldValue;
-    const result = await this.entityModel.find(query).limit(limit).exec();    
+    const result = await this.entityModel.find(query).limit(limit).exec();
     return result;
   }
+
   async find(entityFilterQuery: FilterQuery<T>): Promise<T[]> {
     return this.entityModel.find(entityFilterQuery).exec();
+  }
+
+  async deleteObjectById(entityId: string): Promise<T | null> {
+    return this.entityModel.findByIdAndDelete(entityId).exec();
   }
 }
