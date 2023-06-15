@@ -21,7 +21,7 @@ export class ComicService {
     private readonly comicRepository: ComicRepository,
     private readonly imageService: ImageService,
     private readonly categoryService: CategoryService,
-  ) {}
+  ) { }
   async getComicOption(comic: ComicDocument, isDetail: boolean): Promise<any> {
     const comicPath: { [key: string]: ImageResponse } = {
       image_detail: {
@@ -274,7 +274,8 @@ export class ComicService {
 
     for (const comic of filterSearchComics) {
       const responseComic = await this.getComicOption(comic, false);
-      responeSearchComics.push(responseComic);
+      responseComic.description = comic.description
+      responeSearchComics.push(responseComic);      
     }
     return responeSearchComics;
   }
