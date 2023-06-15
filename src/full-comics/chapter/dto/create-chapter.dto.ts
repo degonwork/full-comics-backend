@@ -1,11 +1,14 @@
-import { CreateImageDto } from "../../../image/dto/create-image.dto";
+import { CreateChapterContentDto } from "./create-chapter-content.dto";
+import { CreateChapterImageThumnailDto } from "./create-chapter-image-thumnail.dto";
 
 export class CreateChapterDto {
-    image: CreateImageDto;
-    commic_id: string;
+    image_thumnail: CreateChapterImageThumnailDto;
+    comic_id: string;
     publisher_id: string;
-    chapter_content: CreateImageDto[];
-    chapter_intro: string;
+    chapter_content: CreateChapterContentDto[];
+    chapter_des: string;
     publish_date: string;
     reads: number;
+
+
 }

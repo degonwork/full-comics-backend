@@ -1,7 +1,8 @@
-import { Injectable  } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateImageDto } from './dto/create-image.dto';
 import { ImageRepository } from './repository/image.repository';
 import { ImageDocument, Image, } from './schema/image.schema';
+import { Response } from 'express';
 
 @Injectable()
 export class ImageService {
@@ -11,7 +12,29 @@ export class ImageService {
         return this.imageRepository.createObject(createImageDto);
     }
 
+    async createImageFile(createImageDto: CreateImageDto, image: Express.Multer.File): Promise<ImageDocument> {        
+        createImageDto.path = `${process.env.BASEURLIMAGE}${image.filename}`
+        const result = await this.imageRepository.createObject(createImageDto)
+        return result;
+
+    }
+
+    async createComicImageFile(createImageDto: CreateImageDto, image: Express.Multer.File): Promise<ImageDocument> {
+        createImageDto.path = `${process.env.BASEURLIMAGE}${image[0].filename}`
+        const result = await this.imageRepository.createObject(createImageDto)
+        return result;
+    }
+    
+    async findImagesById(id: string): Promise<Image[]> {
+        return this.imageRepository.findById(id);
+    }
+
+
     async findImageById(_id: string): Promise<Image> {
-        return this.imageRepository.findOneObject({_id});
+        return await this.imageRepository.findOneObject({ _id });
+    }
+
+    async getImage(filename: string, res: Response) {
+        res.sendFile(filename, { root: './uploads' })
     }
 }

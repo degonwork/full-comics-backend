@@ -7,11 +7,14 @@ import { ImageModule } from 'src/image/image.module';
 import { PublisherController } from './publisher.controller';
 
 @Module({
-    imports: [
-        MongooseModule.forFeature([{name:Publisher.name, schema: PublisherSchema}]),
-        ImageModule,
-    ],
-    providers: [PublisherService, PublisherRepository],
-    controllers: [PublisherController]
+  imports: [
+    MongooseModule.forFeature([
+      { name: Publisher.name, schema: PublisherSchema },
+    ]),
+    ImageModule,
+  ],
+  providers: [PublisherService, PublisherRepository],
+  controllers: [PublisherController],
+  exports: [PublisherService, PublisherRepository],
 })
 export class PublisherModule {}

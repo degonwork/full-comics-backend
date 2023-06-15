@@ -1,21 +1,22 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 export type ImageDocument = Image & Document;
 
-export enum TypeImage  {
-    COMMIC = 'commic',
-    CHAPTER = 'chapter',
-    CONTENT = 'content',
-    PUBLISHER = 'publisher,'
+export enum TypeImage {
+  COMIC = 'comic',
+  CHAPTER = 'chapter',
+  CONTENT = 'content',
+  PUBLISHER = 'publisher',
 }
 
 @Schema()
 export class Image {
-    @Prop()
-    path: string;
-    @Prop()
-    type: TypeImage;
+  @Prop()
+  path: string;
+
+  @Prop()
+  type: TypeImage;
 }
 
 export const ImageSchema = SchemaFactory.createForClass(Image);
