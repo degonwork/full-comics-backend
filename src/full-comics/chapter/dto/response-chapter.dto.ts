@@ -21,8 +21,10 @@ export class ResponseChapter {
     };
     // this.publisher_id = chapter.publisher_id;
     this.content = imageContent.map((content) => ({
-      id: content._id,
+      id: content.id,
       path: content.path,
+      height: content.height,
+      width: content.width,
     }));
     this.chapter_des = chapter.chapter_des;
     this.publish_date = moment(

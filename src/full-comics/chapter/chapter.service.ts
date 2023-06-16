@@ -31,7 +31,7 @@ export class ChapterService {
     private readonly chapterReadService: ChapterReadService,
     private readonly imageService: ImageService,
     private readonly comicRepository: ComicRepository,
-  ) { }
+  ) {}
 
   // Tạo chapter = upload file
   async createChapterFile(
@@ -79,8 +79,8 @@ export class ChapterService {
       chapter_des: chapter.chapter_des,
       image_thumnail: {
         path: chapter.image_thumnail.path,
-        id: chapter.image_thumnail._id.toString()
-      }
+        id: chapter.image_thumnail._id.toString(),
+      },
     };
     updateComicDto.chapters = (
       await this.comicService.findComicById(createChapterDto.comic_id)
@@ -106,8 +106,9 @@ export class ChapterService {
     const chapter = await this.chapterRepository.findOneObject({ _id });
     const imageIds = chapter.chapter_content.map((content) => content.image_id);
     const images = await Promise.all(
-      imageIds.map((id) => this.imageService.findImageById(id)),
+      imageIds.map((id) => this.imageService.findImageByIdDetailChapter(id)),
     );
+        
     return { ...new ResponseChapter(chapter, images) };
   }
 
@@ -159,7 +160,10 @@ export class ChapterService {
     }
     const deleteResult = await this.chapterRepository.deleteObjectById(id);
     if (deleteResult) {
-      const updatedComic = await this.comicService.removeChapterFromComic(id, comicId);
+      const updatedComic = await this.comicService.removeChapterFromComic(
+        id,
+        comicId,
+      );
       if (updatedComic) {
         return 'Successful delete';
       }
@@ -167,7 +171,6 @@ export class ChapterService {
     }
     return 'Invalid chapter';
   }
-
 
   async createImageFile(
     createImageDto: CreateImageDto,
@@ -298,6 +301,4 @@ export class ChapterService {
     );
     return chapterUpdated;
   }
-
-
 }
