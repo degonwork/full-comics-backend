@@ -125,6 +125,7 @@ export class ChapterController {
     return chaterUpdated;
   }
 
+  @UseGuards(PublisherAuthGuard)
   @Delete('delete/:id')
   async deleteChapter(@Param('id') id: string) {
     return this.chapterService.deleteChapter(id);

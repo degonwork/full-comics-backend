@@ -20,7 +20,7 @@ export class PublisherAuthController {
 
   @Post('refresh')
   async refreshToken(@Body() bodyToken: any) {
-    const result = await this.publisherAuthService.refresh(bodyToken.refreshToken)
+    const result = await this.publisherAuthService.refresh(bodyToken.refreshToken)    
     return result;
   }
 
