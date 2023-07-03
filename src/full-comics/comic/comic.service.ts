@@ -56,6 +56,7 @@ export class ComicService {
       title: comic.title,
       ...comicPath,
       reads: comic.reads,
+      categories: comic.categories,
       add_chapter_time: addChapterTimestamp,
       update_time: updateTimestamp,
       times_ads: 5,

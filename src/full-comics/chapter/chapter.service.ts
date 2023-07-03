@@ -87,9 +87,9 @@ export class ChapterService {
     ).chapters;
     updateComicDto.chapters.push(updateChaptersComic);
     updateComicDto.add_chapter_time = chapter.publish_date;
-    updateComicDto.update_time = new Date().toLocaleString('en-GB', {
-      hour12: false,
-    });
+    // updateComicDto.update_time = new Date().toLocaleString('en-GB', {
+    //   hour12: false,
+    // });
     // const { title, categories, description, reads, ...update } = updateComicDto;
     await this.comicService.findComicByIdAndUpdate(
       createChapterDto.comic_id,
