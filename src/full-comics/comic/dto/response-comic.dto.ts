@@ -1,6 +1,6 @@
 import { ImageResponse } from 'src/image/dto/image-response.dto';
-import { UpdateChaptersComic } from '../../chapter/dto/update-chapters-comic.dto';
 import * as moment from 'moment';
+import { ResponseChapterInComic } from 'src/full-comics/chapter/dto/response-chapter-in-comic.dto';
 
 export class ResponseComic {
   _id: string;
@@ -12,7 +12,7 @@ export class ResponseComic {
   author: string;
   description: string;
   year: string;
-  chapters: UpdateChaptersComic[];
+  chapters: ResponseChapterInComic[];
   reads: number;
   publisher_id: string;
   update_time: number;
@@ -43,5 +43,8 @@ export class ResponseComic {
       comic.add_chapter_time,
       'DD/MM/YYYY, hh:mm:ss',
     ).valueOf();
+    this.chapters.forEach((chapter: ResponseChapterInComic, index: number) => {
+      chapter.chapter_index = index + 1;
+    });
   }
 }
