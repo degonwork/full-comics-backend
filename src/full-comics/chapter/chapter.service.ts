@@ -39,9 +39,33 @@ export class ChapterService {
     reqUser: any,
     imageThumnail: Express.Multer.File,
     imageContents: Express.Multer.File[],
-  ): Promise<ChapterDocument> {
+  ): Promise<ChapterDocument | string> {
     let updateComicDto = new UpdateComicDto([]);
     let listCreateChapterContent: CreateChapterContentDto[] = [];
+
+    // Kiểm tra nếu chapter_number là chuỗi (string), thì chuyển thành kiểu số (number)
+    if (typeof createChapterDto.chapter_number === 'string') {
+      const parsedChapterNumber = parseFloat(createChapterDto.chapter_number);
+      if (!isNaN(parsedChapterNumber)) {
+        createChapterDto.chapter_number = parsedChapterNumber;
+      } else {
+        // Xử lý trường hợp không thể chuyển đổi thành số hợp lệ, ví dụ:
+        throw new Error('Chapter number is not a valid number.');
+      }
+    }
+
+    const comic = await this.comicRepository.findOneObject({
+      _id: createChapterDto.comic_id,
+    });
+
+    if (comic && comic.chapters) {
+      for (const chapter of comic.chapters) {
+        if (chapter.chapter_number === createChapterDto.chapter_number) {
+          return 'Chapter number existed';
+        }
+      }
+    }
+
     // Tạo thumnail
     if (imageThumnail) {
       const imageThumnailNew = new CreateImageDto();
@@ -77,13 +101,16 @@ export class ChapterService {
     const updateChaptersComic = {
       chapter_id: chapter.id,
       chapter_des: chapter.chapter_des,
+      chapter_number: chapter.chapter_number,
       image_thumnail: {
         path: chapter.image_thumnail.path,
         id: chapter.image_thumnail._id.toString(),
       },
     };
     updateComicDto.chapters = (
-      await this.comicService.findComicById(createChapterDto.comic_id)
+      await this.comicRepository.findOneObject({
+        _id: createChapterDto.comic_id,
+      })
     ).chapters;
     updateComicDto.chapters.push(updateChaptersComic);
     updateComicDto.add_chapter_time = chapter.publish_date;
@@ -108,7 +135,7 @@ export class ChapterService {
     const images = await Promise.all(
       imageIds.map((id) => this.imageService.findImageByIdDetailChapter(id)),
     );
-        
+
     return { ...new ResponseChapter(chapter, images) };
   }
 
@@ -234,7 +261,7 @@ export class ChapterService {
     chapterUpdateDto: UpdateChapterDto,
     images_content: Express.Multer.File[],
     image_thumnail: Express.Multer.File,
-  ): Promise<ChapterDocument> {
+  ): Promise<ChapterDocument | string> {
     let listUpdateChapterContent: CreateChapterContentDto[] = [];
     const chapter = await this.chapterRepository.findOneObject({
       _id: chapterId,
@@ -251,8 +278,36 @@ export class ChapterService {
       for (const chapters of comicUpdate.chapters) {
         if (chapters.chapter_id === chapter.id) {
           chapters.chapter_des = chapter.chapter_des;
-          console.log();
 
+          break;
+        }
+      }
+    }
+
+    if (chapterUpdateDto.chapter_number) {
+      if (typeof chapterUpdateDto.chapter_number === 'string') {
+        const parsedChapterNumber = parseFloat(chapterUpdateDto.chapter_number);
+        if (!isNaN(parsedChapterNumber)) {
+          chapterUpdateDto.chapter_number = parsedChapterNumber;
+        } else {
+          // Xử lý trường hợp không thể chuyển đổi thành số hợp lệ, ví dụ:
+          throw new Error('Chapter number is not a valid number.');
+        }
+      }
+      if (comicUpdate && comicUpdate.chapters) {
+        for (const chapter of comicUpdate.chapters) {
+          if (chapter.chapter_number === chapterUpdateDto.chapter_number) {
+            return 'Chapter number existed';
+          }
+        }
+      }
+      chapter.chapter_number = chapterUpdateDto.chapter_number;
+      comicUpdate.chapter_update_time = new Date().toLocaleString('en-GB', {
+        hour12: false,
+      });
+      for (const chapters of comicUpdate.chapters) {
+        if (chapters.chapter_id === chapter.id) {
+          chapters.chapter_number = chapter.chapter_number;
           break;
         }
       }

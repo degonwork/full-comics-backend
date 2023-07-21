@@ -42,7 +42,7 @@ export class ChapterController {
       image_thumnail: Express.Multer.File;
     },
   ): Promise<ChapterDocument | string> {
-    const reqUser = req.user;
+    const reqUser = req.user;    
     return this.chapterService.createChapterFile(
       createChapterDto,
       reqUser,
@@ -115,7 +115,7 @@ export class ChapterController {
       images_content: Express.Multer.File[];
       image_thumnail: Express.Multer.File;
     },
-  ): Promise<ChapterDocument> {
+  ): Promise<ChapterDocument | string> {
     const chaterUpdated = await this.chapterService.updateChapter(
       id,
       chapterUpdate,
